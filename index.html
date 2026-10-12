@@ -7,343 +7,501 @@
 <title>PAKU | ANIMA</title>
 
 <style>
-  * { box-sizing: border-box; }
-  [hidden] { display: none !important; }
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
 
-  body {
-    margin: 0;
-    padding: 18px;
-    min-height: 100vh;
-    background: #f6f3ed;
-    color: #244344;
-    font-family: Arial, sans-serif;
-  }
+body {
+  margin: 0;
+  padding: 18px;
+  min-height: 100vh;
+  background: #f6f3ed;
+  color: #244344;
+  font-family: Arial, sans-serif;
+}
 
-  main {
-    max-width: 760px;
-    margin: 20px auto;
-    padding: 26px 22px;
-    background: white;
-    border-radius: 22px;
-    box-shadow: 0 10px 34px #163c3d13;
-  }
+main {
+  max-width: 760px;
+  margin: 20px auto;
+  padding: 26px 22px;
+  background: white;
+  border-radius: 22px;
+  box-shadow: 0 10px 34px #163c3d13;
+}
 
-  h1 {
-    margin: 0;
-    color: #197073;
-    font-size: 44px;
-    letter-spacing: 2px;
-  }
+h1 {
+  margin: 0;
+  color: #197073;
+  font-size: 44px;
+  letter-spacing: 2px;
+}
 
-  h2 { font-size: 23px; }
+h2 { font-size: 23px; }
 
-  .subtitulo {
-    margin: 6px 0 26px;
-    color: #d07d73;
-    font-weight: bold;
-    letter-spacing: 2px;
-    font-size: 13px;
-  }
+.subtitulo {
+  margin: 6px 0 26px;
+  color: #d07d73;
+  font-weight: bold;
+  letter-spacing: 2px;
+  font-size: 13px;
+}
 
-  label {
-    display: block;
-    margin: 16px 0 7px;
-    font-weight: bold;
-  }
+label {
+  display: block;
+  margin: 16px 0 7px;
+  font-weight: bold;
+}
 
-  input {
-    display: block;
-    width: 100%;
-    padding: 14px;
-    border: 1px solid #ccd8d4;
-    border-radius: 10px;
-    font: inherit;
-  }
+input, select {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  border: 1px solid #ccd8d4;
+  border-radius: 10px;
+  background: white;
+  color: #244344;
+  font: inherit;
+}
 
-  button {
-    width: 100%;
-    padding: 14px;
-    margin-top: 16px;
-    border: 0;
-    border-radius: 11px;
-    background: #197073;
-    color: white;
-    font: inherit;
-    font-weight: bold;
-    cursor: pointer;
-  }
+button {
+  width: 100%;
+  padding: 14px;
+  margin-top: 16px;
+  border: 0;
+  border-radius: 11px;
+  background: #197073;
+  color: white;
+  font: inherit;
+  font-weight: bold;
+  cursor: pointer;
+}
 
-  button:disabled { opacity: .6; }
+button:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+}
 
-  button:focus-visible {
-    outline: 3px solid #d07d73;
-    outline-offset: 3px;
-  }
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 3px solid #d07d73;
+  outline-offset: 3px;
+}
 
-  .secundario { background: #405959; }
-  .pequeno { margin-top: 8px; }
+.secundario {
+  background: #405959;
+}
 
-  .muted {
-    color: #6e807c;
-    font-size: 13px;
-    line-height: 1.6;
-  }
+.muted {
+  color: #6e807c;
+  font-size: 13px;
+  line-height: 1.6;
+}
 
-  .resultado {
-    padding: 16px;
-    margin-top: 18px;
-    background: #eaf3f0;
-    border-radius: 12px;
-    white-space: pre-wrap;
-    overflow-wrap: anywhere;
-    line-height: 1.5;
-  }
+.resultado {
+  padding: 16px;
+  margin-top: 18px;
+  background: #eaf3f0;
+  border-radius: 12px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  line-height: 1.5;
+}
 
-  .bienvenida {
-    padding: 18px;
-    margin: 18px 0;
-    background: #eaf3f0;
-    border-radius: 15px;
-  }
+.bienvenida {
+  padding: 18px;
+  margin: 18px 0;
+  background: #eaf3f0;
+  border-radius: 15px;
+}
 
-  .estado {
-    color: #17655f;
-    font-size: 12px;
-    font-weight: bold;
-  }
+.estado {
+  color: #17655f;
+  font-size: 12px;
+  font-weight: bold;
+}
 
-  .modulos {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
-    margin-top: 22px;
-  }
+.modulos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 22px;
+}
 
-  .modulo {
-    padding: 17px;
-    border: 1px solid #e0e8e4;
-    border-radius: 15px;
-    background: #fcfdfc;
-    min-height: 165px;
-  }
+.modulo {
+  padding: 17px;
+  border: 1px solid #e0e8e4;
+  border-radius: 15px;
+  background: #fcfdfc;
+  min-height: 165px;
+}
 
-  .simbolo { font-size: 25px; }
-  .modulo strong {
-    display: block;
-    margin-top: 10px;
-  }
+.simbolo { font-size: 25px; }
 
-  .modulo p {
-    color: #647773;
-    font-size: 13px;
-    line-height: 1.4;
-  }
+.modulo strong {
+  display: block;
+  margin-top: 10px;
+}
 
-  .pendiente {
-    color: #bc7b70;
-    font-size: 11px;
-    font-weight: bold;
-  }
+.modulo p {
+  color: #647773;
+  font-size: 13px;
+  line-height: 1.4;
+}
 
-  .modulo button {
-    margin-top: 8px;
-    font-size: 13px;
-    padding: 10px;
-  }
+.pendiente {
+  color: #bc7b70;
+  font-size: 11px;
+  font-weight: bold;
+}
 
-  .tarjeta {
-    margin: 12px 0;
-    padding: 16px;
-    border: 1px solid #dce6e2;
-    border-radius: 13px;
-    background: #fcfdfc;
-  }
+.modulo button {
+  margin-top: 8px;
+  font-size: 13px;
+  padding: 10px;
+}
 
-  .tarjeta strong {
-    display: block;
-    margin-bottom: 7px;
-  }
+.tarjeta {
+  margin: 12px 0;
+  padding: 16px;
+  border: 1px solid #dce6e2;
+  border-radius: 13px;
+  background: #fcfdfc;
+}
 
-  .tarjeta p {
-    margin: 7px 0;
-    line-height: 1.5;
-    overflow-wrap: anywhere;
-  }
+.tarjeta strong {
+  display: block;
+  margin-bottom: 7px;
+}
 
-  .lista button {
-    text-align: left;
-    background: #eaf3f0;
-    color: #244344;
-    border: 1px solid #d6e5df;
-    margin-top: 9px;
-  }
+.tarjeta p {
+  margin: 7px 0;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
 
-  .lista button:hover { background: #dcebe6; }
+.lista button {
+  text-align: left;
+  background: #eaf3f0;
+  color: #244344;
+  border: 1px solid #d6e5df;
+  margin-top: 9px;
+}
 
-  .separador {
-    border: 0;
-    border-top: 1px solid #e0e8e4;
-    margin: 22px 0;
-  }
+.separador {
+  border: 0;
+  border-top: 1px solid #e0e8e4;
+  margin: 22px 0;
+}
 
-  @media (max-width: 410px) {
-    .modulos { grid-template-columns: 1fr; }
-    h1 { font-size: 40px; }
-  }
+.etiqueta-decision {
+  display: inline-block;
+  margin: 5px 0 10px;
+  padding: 7px 10px;
+  border-radius: 9px;
+  font-size: 12px;
+  font-weight: bold;
+  overflow-wrap: anywhere;
+  background: #fff0dd;
+  color: #76501e;
+}
+
+.etiqueta-decision.bloqueo {
+  background: #fae5e3;
+  color: #8b3435;
+}
+
+.etiqueta-decision.incompleto {
+  background: #edf0f0;
+  color: #4b6262;
+}
+
+@media (max-width: 410px) {
+  .modulos { grid-template-columns: 1fr; }
+  h1 { font-size: 40px; }
+}
 </style>
 </head>
 
 <body>
 <main>
-  <h1>PAKU</h1>
-  <div class="subtitulo">ANIMA · GESTIÓN INTERNA</div>
 
-  <!-- PANTALLA DE ACCESO -->
-  <section id="pantallaAcceso">
-    <h2>Acceso seguro</h2>
-    <p>Ingresa con tu cuenta autorizada.</p>
+<h1>PAKU</h1>
+<div class="subtitulo">ANIMA · GESTIÓN INTERNA</div>
 
-    <form id="formulario">
-      <label for="url">URL de Supabase</label>
-      <input id="url" type="url"
-        placeholder="https://proyecto.supabase.co"
-        required>
+<!-- INICIO DE SESIÓN -->
 
-      <label for="clave">Clave pública</label>
-      <input id="clave" type="text"
-        placeholder="sb_publishable_..."
-        autocomplete="off" required>
+<section id="pantallaAcceso">
 
-      <label for="correo">Correo electrónico</label>
-      <input id="correo" type="email"
-        autocomplete="username" required>
+<h2>Acceso seguro</h2>
+<p>Ingresa con tu cuenta autorizada.</p>
 
-      <label for="contrasena">Contraseña</label>
-      <input id="contrasena" type="password"
-        autocomplete="current-password" required>
+<form id="formulario">
 
-      <button id="botonEntrar" type="submit">
-        Ingresar a PAKU–ANIMA
-      </button>
-    </form>
+<label for="url">URL de Supabase</label>
+<input
+  id="url"
+  type="url"
+  placeholder="https://proyecto.supabase.co"
+  required
+>
 
-    <div id="resultado" class="resultado"
-         role="status" aria-live="polite">
-      Esperando inicio de sesión.
-    </div>
+<label for="clave">Clave pública</label>
+<input
+  id="clave"
+  type="text"
+  placeholder="sb_publishable_..."
+  autocomplete="off"
+  required
+>
 
-    <p class="muted">
-      Solo se permite una clave pública
-      sb_publishable_. No utilices claves secretas.
-    </p>
-  </section>
+<label for="correo">Correo electrónico</label>
+<input
+  id="correo"
+  type="email"
+  autocomplete="username"
+  required
+>
 
-  <!-- PANEL DE ADMINISTRACION -->
-  <section id="panel" hidden>
-    <h2>Panel de administración</h2>
+<label for="contrasena">Contraseña</label>
+<input
+  id="contrasena"
+  type="password"
+  autocomplete="current-password"
+  required
+>
 
-    <div class="bienvenida">
-      <span class="estado">ADMINISTRADORA ACTIVA</span>
-      <p><strong>Bienvenida a PAKU–ANIMA.</strong></p>
-      <p id="correoActivo" class="muted"></p>
-    </div>
+<button id="botonEntrar" type="submit">
+  Ingresar a PAKU–ANIMA
+</button>
 
-    <section id="inicioPanel">
-      <h3>Módulos del sistema</h3>
+</form>
 
-      <div class="modulos">
-        <article class="modulo">
-          <div class="simbolo">🐾</div>
-          <strong>PakuID</strong>
-          <p>Perfiles, restricciones e historial.</p>
-          <button id="abrirPakuID" type="button">
-            Consultar PakuID
-          </button>
-        </article>
+<div
+  id="resultado"
+  class="resultado"
+  role="status"
+  aria-live="polite"
+>
+  Esperando inicio de sesión.
+</div>
 
-        <article class="modulo">
-          <div class="simbolo">🧠</div>
-          <strong>ANIMA</strong>
-          <p>Evaluaciones y recomendaciones.</p>
-          <span class="pendiente">PRÓXIMAMENTE</span>
-        </article>
+<p class="muted">
+  Utiliza solamente la clave pública
+  sb_publishable_. Nunca ingreses
+  una clave secreta.
+</p>
 
-        <article class="modulo">
-          <div class="simbolo">📦</div>
-          <strong>Productos</strong>
-          <p>Catálogo, proveedores e inventario.</p>
-          <span class="pendiente">PRÓXIMAMENTE</span>
-        </article>
+</section>
 
-        <article class="modulo">
-          <div class="simbolo">📋</div>
-          <strong>Operaciones</strong>
-          <p>Cotizaciones, pedidos y seguimiento.</p>
-          <span class="pendiente">PRÓXIMAMENTE</span>
-        </article>
-      </div>
-    </section>
+<!-- PANEL ADMINISTRATIVO -->
 
-    <!-- MODULO PAKUID -->
-    <section id="vistaPakuID" hidden>
-      <button id="volverPanel" class="secundario"
-              type="button">
-        ← Volver al panel
-      </button>
+<section id="panel" hidden>
 
-      <h2>🐾 PakuID</h2>
-      <p class="muted">
-        Consulta protegida, exclusivamente de lectura.
-        Se muestran hasta 50 perfiles por consulta.
-      </p>
+<h2>Panel de administración</h2>
 
-      <div id="estadoListado" class="resultado"
-           role="status" aria-live="polite">
-        Preparando consulta...
-      </div>
+<div class="bienvenida">
+  <span class="estado">
+    ADMINISTRADORA ACTIVA
+  </span>
 
-      <div id="listaPerfiles" class="lista"></div>
+  <p>
+    <strong>
+      Bienvenida a PAKU–ANIMA.
+    </strong>
+  </p>
 
-      <section id="seccionDetalle" hidden>
-        <hr class="separador">
+  <p id="correoActivo" class="muted"></p>
+</div>
 
-        <button id="volverListado" class="secundario"
-                type="button">
-          ← Volver al listado
-        </button>
+<section id="inicioPanel">
 
-        <h3 id="tituloDetalle">Detalle de PakuID</h3>
-        <div id="datosPerfil"></div>
+<h3>Módulos del sistema</h3>
 
-        <h3>Restricciones registradas</h3>
-        <div id="restriccionesPerfil"></div>
+<div class="modulos">
 
-        <h3>Historial de restricciones</h3>
-        <div id="historialPerfil"></div>
-      </section>
-    </section>
+<article class="modulo">
+  <div class="simbolo">🐾</div>
+  <strong>PakuID</strong>
+  <p>Perfiles, restricciones e historial.</p>
 
-    <button id="botonSalir" class="secundario"
-            type="button">
-      Cerrar sesión
-    </button>
+  <button id="abrirPakuID" type="button">
+    Consultar PakuID
+  </button>
+</article>
 
-    <p class="muted">
-      PAKU V1 · Entorno de desarrollo.
-      ANIMA y los demás módulos aún están pendientes.
-    </p>
-  </section>
+<article class="modulo">
+  <div class="simbolo">🧠</div>
+  <strong>ANIMA</strong>
+  <p>
+    Evaluaciones preventivas
+    de productos ficticios.
+  </p>
+
+  <button id="abrirAnima" type="button">
+    Abrir ANIMA
+  </button>
+</article>
+
+<article class="modulo">
+  <div class="simbolo">📦</div>
+  <strong>Productos</strong>
+  <p>Catálogo, proveedores e inventario.</p>
+
+  <span class="pendiente">
+    PRÓXIMAMENTE
+  </span>
+</article>
+
+<article class="modulo">
+  <div class="simbolo">📋</div>
+  <strong>Operaciones</strong>
+  <p>Cotizaciones, pedidos y seguimiento.</p>
+
+  <span class="pendiente">
+    PRÓXIMAMENTE
+  </span>
+</article>
+
+</div>
+</section>
+
+<!-- MODULO PAKUID -->
+
+<section id="vistaPakuID" hidden>
+
+<button
+  id="volverPanelPakuID"
+  class="secundario"
+  type="button"
+>
+  ← Volver al panel
+</button>
+
+<h2>🐾 PakuID</h2>
+
+<p class="muted">
+  Consulta protegida de solo lectura.
+  Se muestran hasta 50 perfiles.
+</p>
+
+<div
+  id="estadoListado"
+  class="resultado"
+  role="status"
+  aria-live="polite"
+>
+  Preparando consulta...
+</div>
+
+<div id="listaPerfiles" class="lista"></div>
+
+<section id="seccionDetalle" hidden>
+
+<hr class="separador">
+
+<button
+  id="volverListado"
+  class="secundario"
+  type="button"
+>
+  ← Volver al listado
+</button>
+
+<h3 id="tituloDetalle">
+  Detalle de PakuID
+</h3>
+
+<div id="datosPerfil"></div>
+
+<h3>Restricciones registradas</h3>
+<div id="restriccionesPerfil"></div>
+
+<h3>Historial de restricciones</h3>
+<div id="historialPerfil"></div>
+
+</section>
+</section>
+
+<!-- MODULO ANIMA -->
+
+<section id="vistaAnima" hidden>
+
+<button
+  id="volverPanelAnima"
+  class="secundario"
+  type="button"
+>
+  ← Volver al panel
+</button>
+
+<h2>🧠 ANIMA · Evaluación preventiva</h2>
+
+<p class="muted">
+  Simulación interna de solo lectura.
+  No autoriza productos,
+  recomendaciones ni ventas.
+</p>
+
+<label for="selectorAnima">
+  Selecciona el Pakurrijo
+</label>
+
+<select id="selectorAnima" disabled>
+  <option value="">
+    Cargando perfiles...
+  </option>
+</select>
+
+<button
+  id="evaluarAnima"
+  type="button"
+  disabled
+>
+  Evaluar productos ficticios
+</button>
+
+<div
+  id="estadoAnima"
+  class="resultado"
+  role="status"
+  aria-live="polite"
+>
+  Preparando simulación...
+</div>
+
+<div id="resultadosAnima"></div>
+
+</section>
+
+<button
+  id="botonSalir"
+  class="secundario"
+  type="button"
+>
+  Cerrar sesión
+</button>
+
+<p class="muted">
+  PAKU V1 · Entorno de desarrollo.
+  Las evaluaciones son ficticias
+  y no tienen autorización comercial.
+</p>
+
+</section>
 </main>
 
 <script type="module">
+
 import { createClient } from
-  "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+"https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 
 const $ = (id) => document.getElementById(id);
 
 let cliente = null;
 let autorizada = false;
 let versionSesion = 0;
+let versionVista = 0;
+let versionDetalle = 0;
 
 function limpiar(elemento) {
   elemento.replaceChildren();
@@ -352,15 +510,29 @@ function limpiar(elemento) {
 function crearTexto(contenedor, etiqueta, valor) {
   const p = document.createElement("p");
   const fuerte = document.createElement("strong");
+
   fuerte.textContent = etiqueta + ": ";
 
   p.appendChild(fuerte);
-  p.appendChild(document.createTextNode(
-    valor === null || valor === undefined ||
-    valor === "" ? "No informado" : String(valor)
-  ));
+
+  p.appendChild(
+    document.createTextNode(
+      valor === null ||
+      valor === undefined ||
+      valor === ""
+        ? "No informado"
+        : String(valor)
+    )
+  );
 
   contenedor.appendChild(p);
+}
+
+function crearTarjeta(contenedor) {
+  const tarjeta = document.createElement("article");
+  tarjeta.className = "tarjeta";
+  contenedor.appendChild(tarjeta);
+  return tarjeta;
 }
 
 function fecha(valor) {
@@ -373,139 +545,184 @@ function fecha(valor) {
     : d.toLocaleString("es-CL");
 }
 
-function crearTarjeta(contenedor) {
-  const tarjeta = document.createElement("article");
-  tarjeta.className = "tarjeta";
-  contenedor.appendChild(tarjeta);
-  return tarjeta;
+function mostrarVista(vista) {
+  ++versionVista;
+
+  $("inicioPanel").hidden = vista !== "inicio";
+  $("vistaPakuID").hidden = vista !== "pakuid";
+  $("vistaAnima").hidden = vista !== "anima";
 }
 
-function mostrarPanel() {
-  $("pantallaAcceso").hidden = true;
-  $("panel").hidden = false;
-  $("inicioPanel").hidden = false;
-  $("vistaPakuID").hidden = true;
+function comprobarAcceso() {
+  if (!cliente || !autorizada) {
+    throw new Error(
+      "Debes iniciar sesión nuevamente."
+    );
+  }
 }
 
 function restablecerPantalla() {
+  ++versionVista;
+
   $("panel").hidden = true;
   $("pantallaAcceso").hidden = false;
-  $("vistaPakuID").hidden = true;
+
   $("inicioPanel").hidden = false;
+  $("vistaPakuID").hidden = true;
+  $("vistaAnima").hidden = true;
   $("seccionDetalle").hidden = true;
 
   limpiar($("listaPerfiles"));
   limpiar($("datosPerfil"));
   limpiar($("restriccionesPerfil"));
   limpiar($("historialPerfil"));
+  limpiar($("resultadosAnima"));
+
+  $("selectorAnima").replaceChildren();
+  $("selectorAnima").disabled = true;
+  $("evaluarAnima").disabled = true;
 
   $("correoActivo").textContent = "";
   $("contrasena").value = "";
 }
 
-function comprobarAcceso() {
-  if (!cliente || !autorizada) {
-    throw new Error("Debes iniciar sesión nuevamente.");
-  }
-}
+// AUTENTICACION ADMINISTRATIVA
 
-$("formulario").addEventListener("submit", async (e) => {
-  e.preventDefault();
+$("formulario").addEventListener(
+  "submit",
+  async (e) => {
 
-  const intento = ++versionSesion;
-  autorizada = false;
-  $("botonEntrar").disabled = true;
-  $("resultado").textContent = "Verificando identidad...";
+    e.preventDefault();
 
-  try {
-    const url = new URL($("url").value.trim());
+    const intento = ++versionSesion;
 
-    if (
-      url.protocol !== "https:" ||
-      !/^[a-z0-9-]+\.supabase\.co$/i.test(url.hostname) ||
-      url.pathname !== "/" ||
-      url.search ||
-      url.hash
-    ) {
-      throw new Error(
-        "La URL debe ser la dirección principal de Supabase."
-      );
-    }
+    autorizada = false;
 
-    const clave = $("clave").value.trim();
-
-    if (!clave.startsWith("sb_publishable_")) {
-      throw new Error(
-        "Utiliza la clave pública sb_publishable_."
-      );
-    }
-
-    cliente = createClient(url.origin, clave, {
-      auth: {
-        persistSession: false,
-        autoRefreshToken: false,
-        detectSessionInUrl: false
-      }
-    });
-
-    const { data, error } =
-      await cliente.auth.signInWithPassword({
-        email: $("correo").value.trim(),
-        password: $("contrasena").value
-      });
-
-    if (error) throw error;
-
-    if (!data.user || !data.session) {
-      throw new Error("No se obtuvo una sesión válida.");
-    }
-
-    if (intento !== versionSesion) return;
+    $("botonEntrar").disabled = true;
 
     $("resultado").textContent =
-      "Identidad correcta. Verificando autorización...";
+      "Verificando identidad...";
 
-    const permiso =
-      await cliente.rpc("paku_soy_administradora");
+    try {
 
-    if (permiso.error) throw permiso.error;
-
-    if (permiso.data !== true) {
-      throw new Error(
-        "La cuenta no tiene autorización administrativa activa."
+      const url = new URL(
+        $("url").value.trim()
       );
-    }
 
-    if (intento !== versionSesion) return;
-
-    autorizada = true;
-    $("correoActivo").textContent = data.user.email || "";
-    mostrarPanel();
-
-  } catch (error) {
-    if (intento === versionSesion) {
-      autorizada = false;
-      restablecerPantalla();
-
-      $("resultado").textContent =
-        "No se pudo acceder:\n" +
-        (error.message || "Error desconocido.");
-
-      if (cliente) {
-        try { await cliente.auth.signOut(); }
-        catch (_) {}
+      if (
+        url.protocol !== "https:" ||
+        !/^[a-z0-9-]+\.supabase\.co$/i.test(
+          url.hostname
+        ) ||
+        url.pathname !== "/" ||
+        url.search ||
+        url.hash
+      ) {
+        throw new Error(
+          "La URL debe ser la dirección principal de Supabase."
+        );
       }
 
-      cliente = null;
+      const clave = $("clave").value.trim();
+
+      if (!clave.startsWith("sb_publishable_")) {
+        throw new Error(
+          "Utiliza solamente la clave pública sb_publishable_."
+        );
+      }
+
+      cliente = createClient(
+        url.origin,
+        clave,
+        {
+          auth: {
+            persistSession: false,
+            autoRefreshToken: false,
+            detectSessionInUrl: false
+          }
+        }
+      );
+
+      const { data, error } =
+        await cliente.auth.signInWithPassword({
+          email: $("correo").value.trim(),
+          password: $("contrasena").value
+        });
+
+      if (error) throw error;
+
+      if (!data.user || !data.session) {
+        throw new Error(
+          "No se obtuvo una sesión válida."
+        );
+      }
+
+      if (intento !== versionSesion) return;
+
+      $("resultado").textContent =
+        "Identidad correcta. Verificando autorización...";
+
+      const permiso = await cliente.rpc(
+        "paku_soy_administradora"
+      );
+
+      if (permiso.error) {
+        throw permiso.error;
+      }
+
+      if (permiso.data !== true) {
+        throw new Error(
+          "La cuenta no tiene autorización administrativa activa."
+        );
+      }
+
+      if (intento !== versionSesion) return;
+
+      autorizada = true;
+
+      $("correoActivo").textContent =
+        data.user.email || "";
+
+      $("pantallaAcceso").hidden = true;
+      $("panel").hidden = false;
+
+      mostrarVista("inicio");
+
+    } catch (error) {
+
+      if (intento === versionSesion) {
+
+        autorizada = false;
+        restablecerPantalla();
+
+        $("resultado").textContent =
+          "No se pudo acceder:\n" +
+          (error.message || "Error desconocido.");
+
+        if (cliente) {
+          try {
+            await cliente.auth.signOut();
+          } catch (_) {}
+        }
+
+        cliente = null;
+      }
+
+    } finally {
+
+      $("contrasena").value = "";
+      $("botonEntrar").disabled = false;
+
     }
-  } finally {
-    $("contrasena").value = "";
-    $("botonEntrar").disabled = false;
   }
-});
+);
+
+// PAKUID - LISTADO
 
 async function listarPerfiles() {
-  const consulta = versionSesion;
+
+  const sesion = versionSesion;
+  const vista = versionVista;
 
   $("estadoListado").textContent =
     "Consultando perfiles en Supabase...";
@@ -514,47 +731,61 @@ async function listarPerfiles() {
   $("seccionDetalle").hidden = true;
 
   try {
+
     comprobarAcceso();
 
     const { data, error } =
-      await cliente.rpc("paku_listar_perfiles");
+      await cliente.rpc(
+        "paku_listar_perfiles"
+      );
 
     if (error) throw error;
-    if (consulta !== versionSesion) return;
+
+    if (
+      sesion !== versionSesion ||
+      vista !== versionVista
+    ) return;
 
     if (!Array.isArray(data)) {
-      throw new Error("Formato de respuesta inesperado.");
+      throw new Error(
+        "Formato de respuesta inesperado."
+      );
     }
 
     $("estadoListado").textContent =
-      data.length + " perfil(es) recuperado(s).";
-
-    if (data.length === 0) {
-      $("estadoListado").textContent =
-        "No se encontraron perfiles.";
-      return;
-    }
+      data.length +
+      " perfil(es) recuperado(s).";
 
     for (const perfil of data) {
-      const boton = document.createElement("button");
+
+      const boton =
+        document.createElement("button");
+
       boton.type = "button";
 
       boton.textContent =
         (perfil.pakurrijo || "Sin nombre") +
-        " · " + (perfil.estado || "Sin estado") +
-        " · Versión " + (perfil.version_perfil ?? "?") +
+        " · " +
+        (perfil.estado || "Sin estado") +
+        " · Versión " +
+        (perfil.version_perfil ?? "?") +
         " · Restricciones activas: " +
         (perfil.restricciones_activas ?? 0);
 
-      boton.addEventListener("click", () => {
-        verDetalle(perfil.id);
-      });
+      boton.addEventListener(
+        "click",
+        () => verDetalle(perfil.id)
+      );
 
       $("listaPerfiles").appendChild(boton);
     }
 
   } catch (error) {
-    if (consulta !== versionSesion) return;
+
+    if (
+      sesion !== versionSesion ||
+      vista !== versionVista
+    ) return;
 
     $("estadoListado").textContent =
       "No se pudo consultar PakuID:\n" +
@@ -563,44 +794,68 @@ async function listarPerfiles() {
   }
 }
 
+// PAKUID - DETALLE
+
 async function verDetalle(id) {
-  const consulta = versionSesion;
+
+  const sesion = versionSesion;
+  const vista = versionVista;
+  const detalle = ++versionDetalle;
 
   $("seccionDetalle").hidden = false;
-  $("tituloDetalle").textContent = "Cargando perfil...";
+
+  $("tituloDetalle").textContent =
+    "Cargando perfil...";
 
   limpiar($("datosPerfil"));
   limpiar($("restriccionesPerfil"));
   limpiar($("historialPerfil"));
 
   try {
+
     comprobarAcceso();
 
     const { data, error } =
-      await cliente.rpc("paku_detalle_perfil", {
-        p_pakuid: id
-      });
+      await cliente.rpc(
+        "paku_detalle_perfil",
+        { p_pakuid: id }
+      );
 
     if (error) throw error;
-    if (consulta !== versionSesion) return;
+
+    if (
+      sesion !== versionSesion ||
+      vista !== versionVista ||
+      detalle !== versionDetalle
+    ) return;
 
     if (!data || !data.id) {
-      throw new Error("El perfil no fue encontrado.");
+      throw new Error(
+        "El perfil no fue encontrado."
+      );
     }
 
     $("tituloDetalle").textContent =
       data.pakurrijo || "PakuID";
 
-    const perfil = crearTarjeta($("datosPerfil"));
+    const ficha = crearTarjeta(
+      $("datosPerfil")
+    );
 
-    crearTexto(perfil, "Estado", data.estado);
-    crearTexto(perfil, "Versión", data.version_perfil);
-    crearTexto(perfil, "ID", data.id);
+    crearTexto(ficha, "Estado", data.estado);
+    crearTexto(
+      ficha,
+      "Versión",
+      data.version_perfil
+    );
+    crearTexto(ficha, "ID", data.id);
 
-    const restricciones = Array.isArray(data.restricciones)
-      ? data.restricciones : [];
+    const restricciones =
+      Array.isArray(data.restricciones)
+        ? data.restricciones
+        : [];
 
-    if (restricciones.length === 0) {
+    if (!restricciones.length) {
       crearTexto(
         $("restriccionesPerfil"),
         "Resultado",
@@ -609,22 +864,37 @@ async function verDetalle(id) {
     }
 
     for (const r of restricciones) {
-      const tarjeta =
-        crearTarjeta($("restriccionesPerfil"));
+
+      const tarjeta = crearTarjeta(
+        $("restriccionesPerfil")
+      );
 
       crearTexto(tarjeta, "Tipo", r.tipo);
-      crearTexto(tarjeta, "Descripción", r.descripcion);
+
+      crearTexto(
+        tarjeta,
+        "Descripción",
+        r.descripcion
+      );
+
       crearTexto(
         tarjeta,
         "Estado",
         r.activa ? "ACTIVA" : "INACTIVA"
       );
+
       crearTexto(
         tarjeta,
         "Evidencia",
         r.estado_evidencia
       );
-      crearTexto(tarjeta, "Fuente", r.fuente);
+
+      crearTexto(
+        tarjeta,
+        "Fuente",
+        r.fuente
+      );
+
       crearTexto(
         tarjeta,
         "Registrada",
@@ -632,10 +902,12 @@ async function verDetalle(id) {
       );
     }
 
-    const historial = Array.isArray(data.historial)
-      ? data.historial : [];
+    const historial =
+      Array.isArray(data.historial)
+        ? data.historial
+        : [];
 
-    if (historial.length === 0) {
+    if (!historial.length) {
       crearTexto(
         $("historialPerfil"),
         "Resultado",
@@ -644,15 +916,23 @@ async function verDetalle(id) {
     }
 
     for (const h of historial) {
-      const tarjeta =
-        crearTarjeta($("historialPerfil"));
 
-      crearTexto(tarjeta, "Operación", h.operacion);
+      const tarjeta = crearTarjeta(
+        $("historialPerfil")
+      );
+
+      crearTexto(
+        tarjeta,
+        "Operación",
+        h.operacion
+      );
+
       crearTexto(
         tarjeta,
         "Fecha",
         fecha(h.registrado_en)
       );
+
       crearTexto(
         tarjeta,
         "ID restricción",
@@ -661,7 +941,12 @@ async function verDetalle(id) {
     }
 
   } catch (error) {
-    if (consulta !== versionSesion) return;
+
+    if (
+      sesion !== versionSesion ||
+      vista !== versionVista ||
+      detalle !== versionDetalle
+    ) return;
 
     $("tituloDetalle").textContent =
       "No se pudo cargar el perfil";
@@ -674,38 +959,358 @@ async function verDetalle(id) {
   }
 }
 
-$("abrirPakuID").addEventListener("click", () => {
-  $("inicioPanel").hidden = true;
-  $("vistaPakuID").hidden = false;
-  listarPerfiles();
-});
+// NAVEGACION PAKUID
 
-$("volverPanel").addEventListener("click", () => {
-  $("vistaPakuID").hidden = true;
-  $("inicioPanel").hidden = false;
-});
-
-$("volverListado").addEventListener("click", () => {
-  $("seccionDetalle").hidden = true;
-});
-
-$("botonSalir").addEventListener("click", async () => {
-  ++versionSesion;
-  autorizada = false;
-
-  const anterior = cliente;
-  cliente = null;
-
-  restablecerPantalla();
-
-  $("resultado").textContent =
-    "Sesión cerrada. Puedes volver a ingresar.";
-
-  if (anterior) {
-    try { await anterior.auth.signOut(); }
-    catch (_) {}
+$("abrirPakuID").addEventListener(
+  "click",
+  () => {
+    mostrarVista("pakuid");
+    listarPerfiles();
   }
-});
+);
+
+$("volverPanelPakuID").addEventListener(
+  "click",
+  () => mostrarVista("inicio")
+);
+
+$("volverListado").addEventListener(
+  "click",
+  () => {
+    ++versionDetalle;
+    $("seccionDetalle").hidden = true;
+  }
+);
+
+// ANIMA - CARGAR PAKURRIJOS
+
+$("abrirAnima").addEventListener(
+  "click",
+  async () => {
+
+    mostrarVista("anima");
+
+    const sesion = versionSesion;
+    const vista = versionVista;
+
+    limpiar($("resultadosAnima"));
+    limpiar($("selectorAnima"));
+
+    $("selectorAnima").disabled = true;
+    $("evaluarAnima").disabled = true;
+
+    $("estadoAnima").textContent =
+      "Consultando Pakurrijos registrados...";
+
+    try {
+
+      comprobarAcceso();
+
+      const { data, error } =
+        await cliente.rpc(
+          "paku_listar_perfiles"
+        );
+
+      if (error) throw error;
+
+      if (
+        sesion !== versionSesion ||
+        vista !== versionVista
+      ) return;
+
+      if (!Array.isArray(data)) {
+        throw new Error(
+          "Respuesta de perfiles inválida."
+        );
+      }
+
+      const inicio =
+        document.createElement("option");
+
+      inicio.value = "";
+
+      inicio.textContent =
+        "Selecciona un Pakurrijo";
+
+      $("selectorAnima").appendChild(
+        inicio
+      );
+
+      for (const perfil of data) {
+
+        const opcion =
+          document.createElement("option");
+
+        opcion.value = perfil.id;
+
+        opcion.textContent =
+          (perfil.pakurrijo || "Sin nombre") +
+          " · " +
+          (perfil.estado || "Sin estado") +
+          " · Versión " +
+          (perfil.version_perfil ?? "?");
+
+        $("selectorAnima").appendChild(
+          opcion
+        );
+      }
+
+      $("selectorAnima").disabled =
+        data.length === 0;
+
+      $("estadoAnima").textContent =
+        data.length
+          ? "Selecciona el Pakurrijo y ejecuta la simulación."
+          : "No hay perfiles disponibles.";
+
+    } catch (error) {
+
+      if (
+        sesion !== versionSesion ||
+        vista !== versionVista
+      ) return;
+
+      $("estadoAnima").textContent =
+        "Error consultando perfiles: " +
+        error.message;
+    }
+  }
+);
+
+// ANIMA - CAMBIO DE PAKURRIJO
+
+$("selectorAnima").addEventListener(
+  "change",
+  () => {
+
+    $("evaluarAnima").disabled =
+      !$("selectorAnima").value;
+
+    limpiar($("resultadosAnima"));
+
+    $("estadoAnima").textContent =
+      "Listo para evaluar productos ficticios.";
+  }
+);
+
+// ANIMA - SIMULACION PROTEGIDA
+
+$("evaluarAnima").addEventListener(
+  "click",
+  async () => {
+
+    const sesion = versionSesion;
+    const vista = versionVista;
+    const pakuid = $("selectorAnima").value;
+
+    $("evaluarAnima").disabled = true;
+    $("selectorAnima").disabled = true;
+
+    limpiar($("resultadosAnima"));
+
+    $("estadoAnima").textContent =
+      "ANIMA está evaluando productos ficticios...";
+
+    try {
+
+      comprobarAcceso();
+
+      if (!pakuid) {
+        throw new Error(
+          "Selecciona un Pakurrijo."
+        );
+      }
+
+      const { data, error } =
+        await cliente.rpc(
+          "paku_anima_simular_productos",
+          { p_pakuid: pakuid }
+        );
+
+      if (error) throw error;
+
+      if (
+        sesion !== versionSesion ||
+        vista !== versionVista
+      ) return;
+
+      if (
+        data?.modo !==
+          "SIMULACION_SOLO_LECTURA" ||
+        data?.autorizacion_comercial !== false ||
+        !Array.isArray(data?.resultados) ||
+        !data.resultados.every(
+          p => p.autorizacion_automatica === false
+        )
+      ) {
+        throw new Error(
+          "La respuesta del motor no cumple el contrato de simulación."
+        );
+      }
+
+      $("estadoAnima").textContent =
+        "Evaluación completada.\n" +
+        "Versión PakuID: " +
+        data.version_perfil +
+        "\nProductos evaluados: " +
+        data.resultados.length +
+        "\nAutorización comercial: NO";
+
+      if (!data.resultados.length) {
+        crearTexto(
+          $("resultadosAnima"),
+          "Resultado",
+          "Sin productos de prueba."
+        );
+      }
+
+      for (const producto of data.resultados) {
+
+        const tarjeta = crearTarjeta(
+          $("resultadosAnima")
+        );
+
+        const nombre =
+          document.createElement("h3");
+
+        nombre.textContent =
+          producto.nombre ||
+          "Producto sin nombre";
+
+        tarjeta.appendChild(nombre);
+
+        const decision =
+          document.createElement("span");
+
+        decision.className =
+          "etiqueta-decision";
+
+        if (
+          /BLOQUEAD|BLOQUEO/i.test(
+            producto.decision_anima || ""
+          )
+        ) {
+          decision.classList.add("bloqueo");
+
+        } else if (
+          /INFORMACION_INCOMPLETA/i.test(
+            producto.decision_anima || ""
+          )
+        ) {
+          decision.classList.add(
+            "incompleto"
+          );
+        }
+
+        decision.textContent =
+          producto.decision_anima ||
+          "SIN_DECISION";
+
+        tarjeta.appendChild(decision);
+
+        crearTexto(
+          tarjeta,
+          "SKU",
+          producto.sku_paku
+        );
+
+        crearTexto(
+          tarjeta,
+          "Estado composición",
+          producto.estado_composicion
+        );
+
+        crearTexto(
+          tarjeta,
+          "Ingredientes registrados",
+          producto.ingredientes_registrados
+        );
+
+        crearTexto(
+          tarjeta,
+          "Conflictos pendientes",
+          producto.conflictos_pendientes
+        );
+
+        crearTexto(
+          tarjeta,
+          "Conflictos verificados",
+          producto.conflictos_verificados
+        );
+
+        crearTexto(
+          tarjeta,
+          "Autorización automática",
+          "NO"
+        );
+      }
+
+    } catch (error) {
+
+      if (
+        sesion !== versionSesion ||
+        vista !== versionVista
+      ) return;
+
+      $("estadoAnima").textContent =
+        "No se pudo ejecutar ANIMA:\n" +
+        error.message;
+
+    } finally {
+
+      if (
+        sesion === versionSesion &&
+        vista === versionVista
+      ) {
+
+        $("selectorAnima").disabled = false;
+
+        $("evaluarAnima").disabled =
+          !$("selectorAnima").value;
+      }
+    }
+  }
+);
+
+// VOLVER AL PANEL DESDE ANIMA
+
+$("volverPanelAnima").addEventListener(
+  "click",
+  () => {
+
+    mostrarVista("inicio");
+
+    limpiar($("resultadosAnima"));
+  }
+);
+
+// CIERRE DE SESION
+
+$("botonSalir").addEventListener(
+  "click",
+  async () => {
+
+    ++versionSesion;
+    ++versionDetalle;
+
+    autorizada = false;
+
+    const anterior = cliente;
+    cliente = null;
+
+    restablecerPantalla();
+
+    $("resultado").textContent =
+      "Sesión cerrada. Puedes volver a ingresar.";
+
+    if (anterior) {
+      try {
+        await anterior.auth.signOut();
+      } catch (_) {}
+    }
+  }
+);
+
 </script>
 </body>
 </html>
