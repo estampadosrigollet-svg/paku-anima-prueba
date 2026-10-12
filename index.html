@@ -3,19 +3,17 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport"
-      content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>PAKU | ANIMA</title>
 
 <style>
   * { box-sizing: border-box; }
-
   [hidden] { display: none !important; }
 
   body {
     margin: 0;
+    padding: 18px;
     min-height: 100vh;
-    padding: 22px 16px;
     background: #f6f3ed;
     color: #244344;
     font-family: Arial, sans-serif;
@@ -23,11 +21,11 @@
 
   main {
     max-width: 760px;
-    margin: 24px auto;
-    padding: 28px 22px;
+    margin: 20px auto;
+    padding: 26px 22px;
     background: white;
     border-radius: 22px;
-    box-shadow: 0 12px 35px #163c3d13;
+    box-shadow: 0 10px 34px #163c3d13;
   }
 
   h1 {
@@ -37,41 +35,35 @@
     letter-spacing: 2px;
   }
 
-  h2 { margin-top: 12px; }
+  h2 { font-size: 23px; }
 
   .subtitulo {
-    margin: 6px 0 25px;
+    margin: 6px 0 26px;
     color: #d07d73;
-    font-size: 14px;
     font-weight: bold;
     letter-spacing: 2px;
-  }
-
-  .muted {
-    color: #71807d;
     font-size: 13px;
-    line-height: 1.6;
   }
 
   label {
     display: block;
-    margin: 15px 0 7px;
-    font-size: 14px;
+    margin: 16px 0 7px;
     font-weight: bold;
   }
 
   input {
+    display: block;
     width: 100%;
     padding: 14px;
-    border: 1px solid #d1dbd8;
+    border: 1px solid #ccd8d4;
     border-radius: 10px;
     font: inherit;
   }
 
   button {
     width: 100%;
-    padding: 15px;
-    margin-top: 20px;
+    padding: 14px;
+    margin-top: 16px;
     border: 0;
     border-radius: 11px;
     background: #197073;
@@ -81,87 +73,122 @@
     cursor: pointer;
   }
 
-  button:disabled { opacity: 0.6; }
+  button:disabled { opacity: .6; }
 
-  .resultado {
-    margin-top: 18px;
-    padding: 16px;
-    border-radius: 12px;
-    background: #eaf3f0;
-    line-height: 1.6;
-    white-space: pre-wrap;
-    overflow-wrap: anywhere;
+  button:focus-visible {
+    outline: 3px solid #d07d73;
+    outline-offset: 3px;
   }
 
-  .cabecera {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 14px;
+  .secundario { background: #405959; }
+  .pequeno { margin-top: 8px; }
+
+  .muted {
+    color: #6e807c;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .resultado {
+    padding: 16px;
+    margin-top: 18px;
+    background: #eaf3f0;
+    border-radius: 12px;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    line-height: 1.5;
+  }
+
+  .bienvenida {
+    padding: 18px;
+    margin: 18px 0;
+    background: #eaf3f0;
+    border-radius: 15px;
   }
 
   .estado {
-    padding: 9px;
-    border-radius: 10px;
-    background: #e5f1ee;
     color: #17655f;
     font-size: 12px;
     font-weight: bold;
   }
 
-  .bienvenida {
-    margin: 20px 0;
-    padding: 20px;
-    border-radius: 15px;
-    background: #eef5f2;
-  }
-
   .modulos {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 13px;
+    gap: 12px;
     margin-top: 22px;
   }
 
   .modulo {
-    min-height: 145px;
-    padding: 19px;
-    border: 1px solid #e2e8e5;
+    padding: 17px;
+    border: 1px solid #e0e8e4;
     border-radius: 15px;
     background: #fcfdfc;
+    min-height: 165px;
   }
 
-  .modulo .simbolo {
-    font-size: 26px;
-    margin-bottom: 12px;
-  }
-
+  .simbolo { font-size: 25px; }
   .modulo strong {
     display: block;
-    font-size: 17px;
+    margin-top: 10px;
   }
 
   .modulo p {
-    margin: 8px 0;
     color: #647773;
     font-size: 13px;
     line-height: 1.4;
   }
 
   .pendiente {
+    color: #bc7b70;
     font-size: 11px;
     font-weight: bold;
-    color: #b7746c;
   }
 
-  .salir {
-    background: #324b4b;
-    margin-top: 26px;
+  .modulo button {
+    margin-top: 8px;
+    font-size: 13px;
+    padding: 10px;
   }
 
-  @media (max-width: 380px) {
+  .tarjeta {
+    margin: 12px 0;
+    padding: 16px;
+    border: 1px solid #dce6e2;
+    border-radius: 13px;
+    background: #fcfdfc;
+  }
+
+  .tarjeta strong {
+    display: block;
+    margin-bottom: 7px;
+  }
+
+  .tarjeta p {
+    margin: 7px 0;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+  }
+
+  .lista button {
+    text-align: left;
+    background: #eaf3f0;
+    color: #244344;
+    border: 1px solid #d6e5df;
+    margin-top: 9px;
+  }
+
+  .lista button:hover { background: #dcebe6; }
+
+  .separador {
+    border: 0;
+    border-top: 1px solid #e0e8e4;
+    margin: 22px 0;
+  }
+
+  @media (max-width: 410px) {
     .modulos { grid-template-columns: 1fr; }
-    h1 { font-size: 38px; }
+    h1 { font-size: 40px; }
   }
 </style>
 </head>
@@ -169,11 +196,9 @@
 <body>
 <main>
   <h1>PAKU</h1>
-  <div class="subtitulo">
-    ANIMA · GESTIÓN INTERNA
-  </div>
+  <div class="subtitulo">ANIMA · GESTIÓN INTERNA</div>
 
-  <!-- INICIO DE SESIÓN -->
+  <!-- PANTALLA DE ACCESO -->
   <section id="pantallaAcceso">
     <h2>Acceso seguro</h2>
     <p>Ingresa con tu cuenta autorizada.</p>
@@ -181,24 +206,21 @@
     <form id="formulario">
       <label for="url">URL de Supabase</label>
       <input id="url" type="url"
-             placeholder="https://proyecto.supabase.co"
-             required>
+        placeholder="https://proyecto.supabase.co"
+        required>
 
       <label for="clave">Clave pública</label>
       <input id="clave" type="text"
-             placeholder="sb_publishable_..."
-             autocomplete="off"
-             required>
+        placeholder="sb_publishable_..."
+        autocomplete="off" required>
 
       <label for="correo">Correo electrónico</label>
       <input id="correo" type="email"
-             autocomplete="username"
-             required>
+        autocomplete="username" required>
 
       <label for="contrasena">Contraseña</label>
       <input id="contrasena" type="password"
-             autocomplete="current-password"
-             required>
+        autocomplete="current-password" required>
 
       <button id="botonEntrar" type="submit">
         Ingresar a PAKU–ANIMA
@@ -211,77 +233,105 @@
     </div>
 
     <p class="muted">
-      Utiliza únicamente la clave pública
-      sb_publishable_. No ingreses claves secretas.
+      Solo se permite una clave pública
+      sb_publishable_. No utilices claves secretas.
     </p>
   </section>
 
-  <!-- PANEL PROTEGIDO -->
+  <!-- PANEL DE ADMINISTRACION -->
   <section id="panel" hidden>
-    <div class="cabecera">
-      <h2>Panel de administración</h2>
-      <span class="estado">AUTORIZADA</span>
-    </div>
+    <h2>Panel de administración</h2>
 
     <div class="bienvenida">
-      <strong>Bienvenida a PAKU–ANIMA</strong>
+      <span class="estado">ADMINISTRADORA ACTIVA</span>
+      <p><strong>Bienvenida a PAKU–ANIMA.</strong></p>
       <p id="correoActivo" class="muted"></p>
-      <p>
-        Tu identidad ha sido autenticada y
-        tu rol de administradora está activo.
+    </div>
+
+    <section id="inicioPanel">
+      <h3>Módulos del sistema</h3>
+
+      <div class="modulos">
+        <article class="modulo">
+          <div class="simbolo">🐾</div>
+          <strong>PakuID</strong>
+          <p>Perfiles, restricciones e historial.</p>
+          <button id="abrirPakuID" type="button">
+            Consultar PakuID
+          </button>
+        </article>
+
+        <article class="modulo">
+          <div class="simbolo">🧠</div>
+          <strong>ANIMA</strong>
+          <p>Evaluaciones y recomendaciones.</p>
+          <span class="pendiente">PRÓXIMAMENTE</span>
+        </article>
+
+        <article class="modulo">
+          <div class="simbolo">📦</div>
+          <strong>Productos</strong>
+          <p>Catálogo, proveedores e inventario.</p>
+          <span class="pendiente">PRÓXIMAMENTE</span>
+        </article>
+
+        <article class="modulo">
+          <div class="simbolo">📋</div>
+          <strong>Operaciones</strong>
+          <p>Cotizaciones, pedidos y seguimiento.</p>
+          <span class="pendiente">PRÓXIMAMENTE</span>
+        </article>
+      </div>
+    </section>
+
+    <!-- MODULO PAKUID -->
+    <section id="vistaPakuID" hidden>
+      <button id="volverPanel" class="secundario"
+              type="button">
+        ← Volver al panel
+      </button>
+
+      <h2>🐾 PakuID</h2>
+      <p class="muted">
+        Consulta protegida, exclusivamente de lectura.
+        Se muestran hasta 50 perfiles por consulta.
       </p>
-    </div>
 
-    <h3>Módulos del sistema</h3>
+      <div id="estadoListado" class="resultado"
+           role="status" aria-live="polite">
+        Preparando consulta...
+      </div>
 
-    <div class="modulos">
-      <article class="modulo">
-        <div class="simbolo">🐾</div>
-        <strong>PakuID</strong>
-        <p>Perfiles, restricciones e historial.</p>
-        <span class="pendiente">
-          PRÓXIMAMENTE
-        </span>
-      </article>
+      <div id="listaPerfiles" class="lista"></div>
 
-      <article class="modulo">
-        <div class="simbolo">🧠</div>
-        <strong>ANIMA</strong>
-        <p>Evaluaciones y recomendaciones.</p>
-        <span class="pendiente">
-          PRÓXIMAMENTE
-        </span>
-      </article>
+      <section id="seccionDetalle" hidden>
+        <hr class="separador">
 
-      <article class="modulo">
-        <div class="simbolo">📦</div>
-        <strong>Productos</strong>
-        <p>Catálogo, proveedores e inventario.</p>
-        <span class="pendiente">
-          PRÓXIMAMENTE
-        </span>
-      </article>
+        <button id="volverListado" class="secundario"
+                type="button">
+          ← Volver al listado
+        </button>
 
-      <article class="modulo">
-        <div class="simbolo">📋</div>
-        <strong>Operaciones</strong>
-        <p>Cotizaciones, pedidos y seguimiento.</p>
-        <span class="pendiente">
-          PRÓXIMAMENTE
-        </span>
-      </article>
-    </div>
+        <h3 id="tituloDetalle">Detalle de PakuID</h3>
+        <div id="datosPerfil"></div>
 
-    <p class="muted">
-      Panel inicial de pruebas.
-      Los módulos aún no están conectados
-      a los datos operativos.
-    </p>
+        <h3>Restricciones registradas</h3>
+        <div id="restriccionesPerfil"></div>
 
-    <button id="botonSalir" class="salir"
+        <h3>Historial de restricciones</h3>
+        <div id="historialPerfil"></div>
+      </section>
+    </section>
+
+    <button id="botonSalir" class="secundario"
             type="button">
       Cerrar sesión
     </button>
+
+    <p class="muted">
+      PAKU V1 · Entorno de desarrollo.
+      ANIMA y los demás módulos aún están pendientes.
+    </p>
   </section>
 </main>
 
@@ -289,31 +339,86 @@
 import { createClient } from
   "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 
-const acceso =
-  document.getElementById("pantallaAcceso");
-const panel =
-  document.getElementById("panel");
-const formulario =
-  document.getElementById("formulario");
-const resultado =
-  document.getElementById("resultado");
-const entrar =
-  document.getElementById("botonEntrar");
-const salir =
-  document.getElementById("botonSalir");
+const $ = (id) => document.getElementById(id);
 
 let cliente = null;
+let autorizada = false;
+let versionSesion = 0;
 
-formulario.addEventListener("submit", async (e) => {
+function limpiar(elemento) {
+  elemento.replaceChildren();
+}
+
+function crearTexto(contenedor, etiqueta, valor) {
+  const p = document.createElement("p");
+  const fuerte = document.createElement("strong");
+  fuerte.textContent = etiqueta + ": ";
+
+  p.appendChild(fuerte);
+  p.appendChild(document.createTextNode(
+    valor === null || valor === undefined ||
+    valor === "" ? "No informado" : String(valor)
+  ));
+
+  contenedor.appendChild(p);
+}
+
+function fecha(valor) {
+  if (!valor) return "No informada";
+
+  const d = new Date(valor);
+
+  return Number.isNaN(d.getTime())
+    ? String(valor)
+    : d.toLocaleString("es-CL");
+}
+
+function crearTarjeta(contenedor) {
+  const tarjeta = document.createElement("article");
+  tarjeta.className = "tarjeta";
+  contenedor.appendChild(tarjeta);
+  return tarjeta;
+}
+
+function mostrarPanel() {
+  $("pantallaAcceso").hidden = true;
+  $("panel").hidden = false;
+  $("inicioPanel").hidden = false;
+  $("vistaPakuID").hidden = true;
+}
+
+function restablecerPantalla() {
+  $("panel").hidden = true;
+  $("pantallaAcceso").hidden = false;
+  $("vistaPakuID").hidden = true;
+  $("inicioPanel").hidden = false;
+  $("seccionDetalle").hidden = true;
+
+  limpiar($("listaPerfiles"));
+  limpiar($("datosPerfil"));
+  limpiar($("restriccionesPerfil"));
+  limpiar($("historialPerfil"));
+
+  $("correoActivo").textContent = "";
+  $("contrasena").value = "";
+}
+
+function comprobarAcceso() {
+  if (!cliente || !autorizada) {
+    throw new Error("Debes iniciar sesión nuevamente.");
+  }
+}
+
+$("formulario").addEventListener("submit", async (e) => {
   e.preventDefault();
-  entrar.disabled = true;
-  resultado.textContent = "Verificando identidad...";
+
+  const intento = ++versionSesion;
+  autorizada = false;
+  $("botonEntrar").disabled = true;
+  $("resultado").textContent = "Verificando identidad...";
 
   try {
-    const urlTexto =
-      document.getElementById("url").value.trim();
-
-    const url = new URL(urlTexto);
+    const url = new URL($("url").value.trim());
 
     if (
       url.protocol !== "https:" ||
@@ -323,24 +428,17 @@ formulario.addEventListener("submit", async (e) => {
       url.hash
     ) {
       throw new Error(
-        "Ingresa solo la URL principal del proyecto."
+        "La URL debe ser la dirección principal de Supabase."
       );
     }
 
-    const clave =
-      document.getElementById("clave").value.trim();
+    const clave = $("clave").value.trim();
 
     if (!clave.startsWith("sb_publishable_")) {
       throw new Error(
-        "La clave debe ser pública: sb_publishable_."
+        "Utiliza la clave pública sb_publishable_."
       );
     }
-
-    const correo =
-      document.getElementById("correo").value.trim();
-
-    const contrasena =
-      document.getElementById("contrasena").value;
 
     cliente = createClient(url.origin, clave, {
       auth: {
@@ -352,73 +450,260 @@ formulario.addEventListener("submit", async (e) => {
 
     const { data, error } =
       await cliente.auth.signInWithPassword({
-        email: correo,
-        password: contrasena
+        email: $("correo").value.trim(),
+        password: $("contrasena").value
       });
 
     if (error) throw error;
 
     if (!data.user || !data.session) {
-      throw new Error("No se obtuvo sesión válida.");
+      throw new Error("No se obtuvo una sesión válida.");
     }
 
-    resultado.textContent =
-      "Identidad correcta. Revisando autorización...";
+    if (intento !== versionSesion) return;
 
-    const verificacion =
+    $("resultado").textContent =
+      "Identidad correcta. Verificando autorización...";
+
+    const permiso =
       await cliente.rpc("paku_soy_administradora");
 
-    if (verificacion.error) {
-      throw verificacion.error;
-    }
+    if (permiso.error) throw permiso.error;
 
-    if (verificacion.data !== true) {
+    if (permiso.data !== true) {
       throw new Error(
-        "Cuenta sin autorización administrativa activa."
+        "La cuenta no tiene autorización administrativa activa."
       );
     }
 
-    document.getElementById("correoActivo")
-      .textContent = data.user.email || "";
+    if (intento !== versionSesion) return;
 
-    acceso.hidden = true;
-    panel.hidden = false;
+    autorizada = true;
+    $("correoActivo").textContent = data.user.email || "";
+    mostrarPanel();
 
   } catch (error) {
-    panel.hidden = true;
-    acceso.hidden = false;
+    if (intento === versionSesion) {
+      autorizada = false;
+      restablecerPantalla();
 
-    resultado.textContent =
-      "No se pudo acceder:\n" +
-      (error.message || "Error desconocido.");
+      $("resultado").textContent =
+        "No se pudo acceder:\n" +
+        (error.message || "Error desconocido.");
 
-    if (cliente) {
-      try { await cliente.auth.signOut(); }
-      catch (_) {}
+      if (cliente) {
+        try { await cliente.auth.signOut(); }
+        catch (_) {}
+      }
+
+      cliente = null;
     }
   } finally {
-    document.getElementById("contrasena").value = "";
-    entrar.disabled = false;
+    $("contrasena").value = "";
+    $("botonEntrar").disabled = false;
   }
 });
 
-salir.addEventListener("click", async () => {
-  salir.disabled = true;
+async function listarPerfiles() {
+  const consulta = versionSesion;
+
+  $("estadoListado").textContent =
+    "Consultando perfiles en Supabase...";
+
+  limpiar($("listaPerfiles"));
+  $("seccionDetalle").hidden = true;
 
   try {
-    if (cliente) {
-      await cliente.auth.signOut();
+    comprobarAcceso();
+
+    const { data, error } =
+      await cliente.rpc("paku_listar_perfiles");
+
+    if (error) throw error;
+    if (consulta !== versionSesion) return;
+
+    if (!Array.isArray(data)) {
+      throw new Error("Formato de respuesta inesperado.");
     }
-  } catch (_) {
-    // La sesion en memoria tambien se descartara.
-  } finally {
-    cliente = null;
-    panel.hidden = true;
-    acceso.hidden = false;
-    document.getElementById("contrasena").value = "";
-    resultado.textContent =
-      "Sesión finalizada. Puedes volver a ingresar.";
-    salir.disabled = false;
+
+    $("estadoListado").textContent =
+      data.length + " perfil(es) recuperado(s).";
+
+    if (data.length === 0) {
+      $("estadoListado").textContent =
+        "No se encontraron perfiles.";
+      return;
+    }
+
+    for (const perfil of data) {
+      const boton = document.createElement("button");
+      boton.type = "button";
+
+      boton.textContent =
+        (perfil.pakurrijo || "Sin nombre") +
+        " · " + (perfil.estado || "Sin estado") +
+        " · Versión " + (perfil.version_perfil ?? "?") +
+        " · Restricciones activas: " +
+        (perfil.restricciones_activas ?? 0);
+
+      boton.addEventListener("click", () => {
+        verDetalle(perfil.id);
+      });
+
+      $("listaPerfiles").appendChild(boton);
+    }
+
+  } catch (error) {
+    if (consulta !== versionSesion) return;
+
+    $("estadoListado").textContent =
+      "No se pudo consultar PakuID:\n" +
+      error.message +
+      "\nSi tu sesión expiró, vuelve a ingresar.";
+  }
+}
+
+async function verDetalle(id) {
+  const consulta = versionSesion;
+
+  $("seccionDetalle").hidden = false;
+  $("tituloDetalle").textContent = "Cargando perfil...";
+
+  limpiar($("datosPerfil"));
+  limpiar($("restriccionesPerfil"));
+  limpiar($("historialPerfil"));
+
+  try {
+    comprobarAcceso();
+
+    const { data, error } =
+      await cliente.rpc("paku_detalle_perfil", {
+        p_pakuid: id
+      });
+
+    if (error) throw error;
+    if (consulta !== versionSesion) return;
+
+    if (!data || !data.id) {
+      throw new Error("El perfil no fue encontrado.");
+    }
+
+    $("tituloDetalle").textContent =
+      data.pakurrijo || "PakuID";
+
+    const perfil = crearTarjeta($("datosPerfil"));
+
+    crearTexto(perfil, "Estado", data.estado);
+    crearTexto(perfil, "Versión", data.version_perfil);
+    crearTexto(perfil, "ID", data.id);
+
+    const restricciones = Array.isArray(data.restricciones)
+      ? data.restricciones : [];
+
+    if (restricciones.length === 0) {
+      crearTexto(
+        $("restriccionesPerfil"),
+        "Resultado",
+        "No hay restricciones registradas"
+      );
+    }
+
+    for (const r of restricciones) {
+      const tarjeta =
+        crearTarjeta($("restriccionesPerfil"));
+
+      crearTexto(tarjeta, "Tipo", r.tipo);
+      crearTexto(tarjeta, "Descripción", r.descripcion);
+      crearTexto(
+        tarjeta,
+        "Estado",
+        r.activa ? "ACTIVA" : "INACTIVA"
+      );
+      crearTexto(
+        tarjeta,
+        "Evidencia",
+        r.estado_evidencia
+      );
+      crearTexto(tarjeta, "Fuente", r.fuente);
+      crearTexto(
+        tarjeta,
+        "Registrada",
+        fecha(r.registrado_en)
+      );
+    }
+
+    const historial = Array.isArray(data.historial)
+      ? data.historial : [];
+
+    if (historial.length === 0) {
+      crearTexto(
+        $("historialPerfil"),
+        "Resultado",
+        "Sin registros de historial"
+      );
+    }
+
+    for (const h of historial) {
+      const tarjeta =
+        crearTarjeta($("historialPerfil"));
+
+      crearTexto(tarjeta, "Operación", h.operacion);
+      crearTexto(
+        tarjeta,
+        "Fecha",
+        fecha(h.registrado_en)
+      );
+      crearTexto(
+        tarjeta,
+        "ID restricción",
+        h.restriccion_id
+      );
+    }
+
+  } catch (error) {
+    if (consulta !== versionSesion) return;
+
+    $("tituloDetalle").textContent =
+      "No se pudo cargar el perfil";
+
+    crearTexto(
+      $("datosPerfil"),
+      "Error",
+      error.message
+    );
+  }
+}
+
+$("abrirPakuID").addEventListener("click", () => {
+  $("inicioPanel").hidden = true;
+  $("vistaPakuID").hidden = false;
+  listarPerfiles();
+});
+
+$("volverPanel").addEventListener("click", () => {
+  $("vistaPakuID").hidden = true;
+  $("inicioPanel").hidden = false;
+});
+
+$("volverListado").addEventListener("click", () => {
+  $("seccionDetalle").hidden = true;
+});
+
+$("botonSalir").addEventListener("click", async () => {
+  ++versionSesion;
+  autorizada = false;
+
+  const anterior = cliente;
+  cliente = null;
+
+  restablecerPantalla();
+
+  $("resultado").textContent =
+    "Sesión cerrada. Puedes volver a ingresar.";
+
+  if (anterior) {
+    try { await anterior.auth.signOut(); }
+    catch (_) {}
   }
 });
 </script>
