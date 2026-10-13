@@ -1,0 +1,269 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+content="width=device-width, initial-scale=1">
+
+<title>PAKU · Auditoría 77F.6</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  font-family: Arial, sans-serif;
+  background: #f6f3ed;
+  color: #244344;
+  padding: 20px;
+}
+
+main {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 24px;
+  background: white;
+  border-radius: 20px;
+}
+
+h1 { color: #197073; }
+
+label {
+  display: block;
+  margin: 16px 0 7px;
+  font-weight: bold;
+}
+
+input {
+  width: 100%;
+  padding: 13px;
+  border: 1px solid #ccd8d4;
+  border-radius: 10px;
+}
+
+button {
+  width: 100%;
+  padding: 15px;
+  margin-top: 20px;
+  border: none;
+  border-radius: 10px;
+  background: #197073;
+  color: white;
+  font-weight: bold;
+}
+
+button:disabled { opacity: .6; }
+
+#resultado {
+  background: #eaf3f0;
+  padding: 16px;
+  margin-top: 18px;
+  border-radius: 12px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  line-height: 1.6;
+}
+</style>
+</head>
+
+<body>
+<main>
+
+<h1>PAKU · Seguridad</h1>
+<h2>Auditoría 77F.6</h2>
+
+<p>
+Prueba de cuenta autenticada sin
+autorización administrativa.
+Solo lectura.
+</p>
+
+<form id="formulario">
+
+<label for="url">URL de Supabase</label>
+<input id="url" type="url" required
+placeholder="https://proyecto.supabase.co">
+
+<label for="clave">Clave pública</label>
+<input id="clave" required
+autocomplete="off"
+placeholder="sb_publishable_...">
+
+<label for="correo">
+Correo de la cuenta de prueba
+</label>
+<input id="correo" type="email" required>
+
+<label for="contrasena">
+Contraseña de la cuenta de prueba
+</label>
+<input id="contrasena"
+type="password" required>
+
+<button id="probar" type="submit">
+Probar seguridad de ANIMA
+</button>
+
+</form>
+
+<div id="resultado" role="status">
+Esperando prueba...
+</div>
+
+</main>
+
+<script type="module">
+
+import { createClient } from
+"https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+const $ = id => document.getElementById(id);
+
+$("formulario").addEventListener(
+"submit", async (evento) => {
+
+  evento.preventDefault();
+
+  $("probar").disabled = true;
+  $("resultado").textContent =
+    "Comprobando autenticación...";
+
+  let cliente = null;
+
+  try {
+
+    const url = new URL($("url").value.trim());
+    const clave = $("clave").value.trim();
+
+    if (
+      url.protocol !== "https:" ||
+      !/^[a-z0-9-]+\.supabase\.co$/i.test(
+        url.hostname
+      ) ||
+      url.pathname !== "/" ||
+      url.search ||
+      url.hash
+    ) {
+      throw new Error(
+        "URL de Supabase no válida."
+      );
+    }
+
+    if (!clave.startsWith("sb_publishable_")) {
+      throw new Error(
+        "Debes utilizar una clave pública."
+      );
+    }
+
+    cliente = createClient(url.origin, clave, {
+      auth: {
+        persistSession: false,
+        autoRefreshToken: false,
+        detectSessionInUrl: false
+      }
+    });
+
+    const sesion =
+      await cliente.auth.signInWithPassword({
+        email: $("correo").value.trim(),
+        password: $("contrasena").value
+      });
+
+    $("contrasena").value = "";
+
+    if (sesion.error) {
+      throw new Error(
+        "AUTENTICACIÓN NO CONFIRMADA: " +
+        sesion.error.message
+      );
+    }
+
+    if (!sesion.data.session) {
+      throw new Error(
+        "No se obtuvo una sesión."
+      );
+    }
+
+    $("resultado").textContent =
+      "Autenticación correcta.\n" +
+      "Comprobando rol administrativo...";
+
+    const rol = await cliente.rpc(
+      "paku_soy_administradora"
+    );
+
+    if (rol.error) {
+      throw new Error(
+        "No se pudo comprobar el rol: " +
+        rol.error.message
+      );
+    }
+
+    if (rol.data !== false) {
+      $("resultado").textContent =
+        "ALERTA O PRUEBA NO VÁLIDA:\n" +
+        "La cuenta no devolvió rol false.\n" +
+        "Rol recibido: " +
+        String(rol.data);
+      return;
+    }
+
+    $("resultado").textContent =
+      "Rol administrativo: NO.\n" +
+      "Intentando ejecutar ANIMA...";
+
+    const respuesta = await cliente.rpc(
+      "paku_anima_simular_productos",
+      {
+        p_pakuid:
+        "36937747-409e-425b-bb8e-b4412cfda83e"
+      }
+    );
+
+    if (
+      respuesta.error &&
+      String(respuesta.error.code) === "42501" &&
+      respuesta.data == null
+    ) {
+      $("resultado").textContent =
+        "PRUEBA 77F.6 APROBADA\n\n" +
+        "Autenticación: CORRECTA\n" +
+        "Rol administrativo: NO\n" +
+        "Ejecución de ANIMA: DENEGADA\n" +
+        "Código: 42501\n" +
+        "Datos de productos entregados: NINGUNO";
+    } else if (respuesta.data != null) {
+      $("resultado").textContent =
+        "ALERTA DE SEGURIDAD\n\n" +
+        "ANIMA devolvió datos a una cuenta " +
+        "sin autorización administrativa.\n" +
+        "No continuar hasta investigar.";
+    } else {
+      $("resultado").textContent =
+        "PRUEBA NO CONCLUYENTE\n\n" +
+        "Código: " +
+        (respuesta.error?.code || "No informado") +
+        "\nMensaje: " +
+        (respuesta.error?.message || "Sin mensaje");
+    }
+
+  } catch (error) {
+    $("resultado").textContent =
+      "PRUEBA NO CONCLUYENTE\n\n" +
+      error.message;
+  } finally {
+    $("contrasena").value = "";
+
+    if (cliente) {
+      try {
+        await cliente.auth.signOut();
+      } catch (_) {}
+    }
+
+    $("probar").disabled = false;
+  }
+
+});
+</script>
+</body>
+</html>
