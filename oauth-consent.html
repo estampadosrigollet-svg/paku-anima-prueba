@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="no-referrer">
+  <title>PAKU · Autorizar ANIMA</title>
+  <style>
+    :root { color-scheme: light; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #f5f1e9; color: #214547; font: 16px/1.5 system-ui, -apple-system, sans-serif; padding: 20px 14px; }
+    main { max-width: 530px; margin: 28px auto; background: white; border-radius: 18px; padding: 28px 22px; box-shadow: 0 10px 30px #174d4b12; }
+    h1 { color: #146e70; margin: 0; font-size: 2rem; letter-spacing: .04em; }
+    h2 { font-size: 1.15rem; margin: 24px 0 8px; }
+    p { margin: 10px 0; }
+    small, .muted { color: #637779; }
+    label { display: block; margin-top: 16px; font-weight: 650; }
+    input { display: block; width: 100%; padding: 13px 12px; font: inherit; margin-top: 6px; border: 1px solid #bacdcb; border-radius: 9px; }
+    button { font: inherit; font-weight: 650; border: 0; border-radius: 10px; padding: 13px 16px; cursor: pointer; }
+    button:disabled { opacity: .55; cursor: not-allowed; }
+    .primary { background: #167477; color: white; width: 100%; margin-top: 22px; }
+    .secondary { background: #e9efed; color: #214547; }
+    .choices { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 24px; }
+    .choices button { width: 100%; }
+    .status { margin-top: 18px; padding: 13px; border-radius: 9px; background: #edf5f3; overflow-wrap: anywhere; white-space: pre-wrap; }
+    .meta { background: #f5f8f7; padding: 16px; border-radius: 9px; margin-top: 14px; overflow-wrap: anywhere; }
+    .meta div + div { margin-top: 12px; }
+    .meta b { display: block; font-size: .9rem; }
+    .foot { font-size: .85rem; margin-top: 24px; }
+    [hidden] { display: none !important; }
+    @media (max-width: 370px) { .choices { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>PAKU</h1>
+    <p class="muted">ANIMA · AUTORIZACIÓN PRIVADA</p>
+    <p>Esta pantalla es exclusivamente para la administradora de PAKU. Los clientes no deben utilizarla.</p>
+    <section id="login">
+      <h2>Verificar tu identidad</h2>
+      <p class="muted">Accede con la cuenta administrativa de Supabase. No uses una clave secreta.</p>
+      <form id="form-login">
+        <label for="public-key">Clave pública de Supabase</label>
+        <input id="public-key" type="text" required autocomplete="off" placeholder="sb_publishable_..." spellcheck="false">
+        <label for="email">Correo administrativo</label>
+        <input id="email" type="email" required autocomplete="username">
+        <label for="password">Contraseña</label>
+        <input id="password" type="password" required autocomplete="current-password">
+        <button id="sign-in" class="primary" type="submit">Verificar acceso</button>
+      </form>
+    </section>
+    <section id="consent" hidden>
+      <h2>Solicitud de acceso a PAKU</h2>
+      <p>Revisa quién está solicitando acceder a tu cuenta. Autoriza únicamente una conexión que reconozcas.</p>
+      <div class="meta">
+        <div><b>Aplicación solicitante</b><span id="client-name"></span></div>
+        <div><b>Dirección de retorno</b><span id="redirect"></span></div>
+        <div><b>Permisos solicitados</b><span id="scopes"></span></div>
+      </div>
+      <p class="muted">La autorización OAuth no permite por sí sola omitir los controles administrativos del servidor MCP.</p>
+      <div class="choices">
+        <button id="deny" class="secondary" type="button">Rechazar</button>
+        <button id="approve" class="primary" type="button" style="margin-top:0">Autorizar</button>
+      </div>
+    </section>
+    <p id="status" class="status" role="status" aria-live="polite"></p>
+    <p class="foot">Solo se emplea la clave pública del proyecto. No se registran contraseñas ni tokens en archivos, repositorios o mensajes.</p>
+  </main>
+  <script type="module">
+    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+    const PROJECT_URL = "https://uagudasyltikkqfwpshx.supabase.co";
+    const params = new URLSearchParams(location.search);
+    const authorizationId = params.get("authorization_id");
+    const el = id => document.getElementById(id);
+    const status = message => { el("status").textContent = message; };
+    let supabase = null;
+    let verified = false;
+    let details = null;
+
+    const safeRedirect = url => {
+      // El enlace proviene de Supabase Auth tras validar OAuth; no viene de un parámetro libre de la página.
+      const parsed = new URL(url);
+      if (parsed.protocol !== "https:") throw new Error("Redirección no HTTPS: verificar configuración OAuth.");
+      location.assign(parsed.href);
+    };
+
+    if (!authorizationId || authorizationId.length > 1024) {
+      el("login").hidden = true;
+      status("No hay una solicitud de autorización válida. Abre esta página desde el proceso de conexión MCP de ChatGPT.");
+    } else {
+      status("Solicitud recibida. Verifica tu identidad para revisarla.");
+    }
+
+    el("form-login").addEventListener("submit", async event => {
+      event.preventDefault();
+      if (!authorizationId || authorizationId.length > 1024) return;
+      el("sign-in").disabled = true;
+      status("Validando identidad administrativa...");
+      try {
+        const key = el("public-key").value.trim();
+        if (!/^sb_publishable_[A-Za-z0-9_-]+$/.test(key)) {
+          throw new Error("Usa solo la clave pública sb_publishable_ del proyecto Paku-desarrollo.");
+        }
+        supabase = createClient(PROJECT_URL, key, {
+          auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
+        });
+        const login = await supabase.auth.signInWithPassword({
+          email: el("email").value.trim(), password: el("password").value
+        });
+        if (login.error || !login.data?.session) {
+          throw login.error || new Error("No se recibió una sesión autenticada.");
+        }
+        el("password").value = "";
+        const identity = await supabase.auth.getUser();
+        if (identity.error || !identity.data?.user) {
+          throw identity.error || new Error("La identidad no pudo verificarse.");
+        }
+        const access = await supabase.rpc("paku_soy_administradora");
+        if (access.error || access.data !== true) {
+          throw new Error("ACCESO_DENEGADO: esta cuenta no está autorizada para administrar PAKU.");
+        }
+        verified = true;
+        const request = await supabase.auth.oauth.getAuthorizationDetails(authorizationId);
+        if (request.error || !request.data) {
+          throw request.error || new Error("No se pudo consultar la solicitud OAuth.");
+        }
+        if (!("authorization_id" in request.data)) {
+          // Supabase Auth informa que el consentimiento existe y aporta su URL de retorno.
+          safeRedirect(request.data.redirect_url);
+          return;
+        }
+        details = request.data;
+        el("client-name").textContent = details.client?.name || "Cliente sin nombre: verificar antes de aprobar";
+        el("redirect").textContent = details.redirect_uri || "No informado";
+        el("scopes").textContent = details.scope || "Sin ámbitos declarados";
+        el("login").hidden = true;
+        el("consent").hidden = false;
+        status("Acceso administrativo comprobado. Revisa la solicitud antes de decidir.");
+      } catch (error) {
+        verified = false;
+        el("consent").hidden = true;
+        status("No fue posible continuar: " + (error?.message || "error desconocido"));
+        if (supabase) { try { await supabase.auth.signOut(); } catch (_) {} }
+      } finally {
+        el("password").value = "";
+        el("sign-in").disabled = false;
+      }
+    });
+
+    async function decide(approval) {
+      if (!verified || !supabase || !details || !authorizationId) return;
+      el("approve").disabled = true;
+      el("deny").disabled = true;
+      status(approval ? "Autorizando conexión..." : "Rechazando solicitud...");
+      try {
+        const outcome = approval
+          ? await supabase.auth.oauth.approveAuthorization(authorizationId)
+          : await supabase.auth.oauth.denyAuthorization(authorizationId);
+        if (outcome.error || !outcome.data?.redirect_url) {
+          throw outcome.error || new Error("Supabase no devolvió una respuesta OAuth verificable.");
+        }
+        safeRedirect(outcome.data.redirect_url);
+      } catch (error) {
+        status("No se completó la decisión: " + (error?.message || "error desconocido"));
+        el("approve").disabled = false;
+        el("deny").disabled = false;
+      }
+    }
+    el("approve").addEventListener("click", () => decide(true));
+    el("deny").addEventListener("click", () => decide(false));
+  </script>
+</body>
+</html>
