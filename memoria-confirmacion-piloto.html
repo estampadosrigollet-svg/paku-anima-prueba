@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>PAKU | Confirmación de preferencia de Luna Test</title>
+<style>
+:root{color-scheme:light;--teal:#176f71;--deep:#244747;--coral:#ce8276;--cream:#f6f2eb;--line:#d9e3df;--muted:#627474}
+*{box-sizing:border-box}
+body{font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif;margin:0;padding:14px;background:var(--cream);color:var(--deep)}
+main{max-width:790px;margin:12px auto;background:white;border-radius:24px;box-shadow:0 15px 44px #163e3b18;padding:clamp(20px,5vw,40px)}
+h1{font-size:clamp(36px,7vw,48px);letter-spacing:.08em;color:var(--teal);margin:0}
+h2{font-size:22px;margin:26px 0 10px}h3{font-size:17px;margin:20px 0 6px}
+.eyebrow{font-size:13px;letter-spacing:.12em;color:var(--coral);font-weight:800;margin:5px 0 22px}
+p{line-height:1.6}.muted{color:var(--muted);font-size:14px}.hint{font-size:13px;color:var(--muted)}
+label{display:block;margin:16px 0 6px;font-size:14px;font-weight:700}
+input,select,textarea{width:100%;border:1px solid var(--line);border-radius:12px;padding:13px;color:var(--deep);background:white;font:inherit}
+textarea{resize:vertical;min-height:100px}input:focus,select:focus,textarea:focus{outline:2px solid #7ebdb2;outline-offset:1px}
+button{font:inherit;font-weight:700;background:var(--teal);color:white;border:0;border-radius:12px;padding:13px 16px;cursor:pointer;min-height:48px}
+button.secondary{background:#355555}button:disabled{opacity:.5;cursor:not-allowed}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}.actions>*{flex:1 1 190px}
+.note{border-left:4px solid var(--coral);background:#fff8f4;border-radius:0 10px 10px 0;padding:12px 14px;font-size:14px;line-height:1.6}
+.status{background:#eaf3ef;border-radius:12px;padding:15px;margin-top:20px;overflow-wrap:anywhere;white-space:pre-wrap}
+.card{background:#f5f9f7;border:1px solid var(--line);border-radius:14px;padding:16px;margin:16px 0}
+pre{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.45;font-size:12px;max-height:360px;overflow:auto;margin:12px 0}
+.checkbox{display:flex;align-items:flex-start;gap:11px;font-weight:500;line-height:1.5;margin:13px 0}.checkbox input{width:20px;height:20px;flex:0 0 20px;margin:1px 0}
+.pill{display:inline-block;border-radius:50px;background:#e0eeea;color:#205e5b;padding:5px 10px;font-size:12px;font-weight:750}
+section[hidden],div[hidden]{display:none!important}#trabajo:not([hidden]){margin-top:18px}
+</style>
+</head>
+<body><main>
+<h1>PAKU</h1>
+<div class="eyebrow">ANIMA · CONFIRMACIÓN PILOTO DE PREFERENCIA</div>
+<p>Confirmación controlada de una preferencia para <strong>Luna Test</strong>. Este módulo conserva el evento original, registra su seguimiento y actualiza el estado actual sin modificar el panel principal.</p>
+<p class="note"><strong>Solo datos ficticios.</strong> No registres experiencias de tutores o Pakurrijos reales aquí. Antes de confirmar, podrás revisar qué información se enviaría a Supabase. <strong>El registro y la actualización son dos operaciones; si la segunda falla, el historial puede quedar guardado y el estado actual pendiente.</strong></p>
+<section id="acceso">
+<h2>Acceso exclusivo de administradora</h2>
+<form id="loginForm">
+<label for="clave">Clave pública de Supabase (sb_publishable_...)</label><input id="clave" type="password" autocomplete="off" spellcheck="false" placeholder="sb_publishable_..." required>
+<label for="correo">Correo de tu cuenta PAKU</label><input id="correo" type="email" autocomplete="username" required>
+<label for="contrasena">Contraseña</label><input id="contrasena" type="password" autocomplete="current-password" required>
+<div class="actions"><button id="entrar" type="submit">Ingresar</button></div>
+</form>
+<p class="hint">Proyecto fijo: Paku-desarrollo. Usa únicamente la clave pública, nunca service_role ni sb_secret_. No compartas credenciales en el chat.</p>
+</section>
+<section id="trabajo" hidden>
+<div class="actions"><span class="pill" id="identidad">Administradora autenticada</span><button id="salir" type="button" class="secondary">Cerrar sesión</button></div>
+<h2>1. Verificar perfil de prueba</h2>
+<div class="card"><strong>Luna Test</strong><p class="hint">PakuID de prueba: <code id="testId"></code></p><div class="actions"><button type="button" id="verificar">Verificar y consultar memoria</button></div><pre id="anterior" hidden></pre></div>
+<div id="formBloque" hidden>
+<h2>2. Preparar experiencia ficticia</h2>
+<p class="muted">Esta prueba registra un <strong>seguimiento vinculado al evento anterior</strong>. La actualización del estado actual requiere una confirmación explícita de estabilidad y no constituye un diagnóstico médico.</p>
+<form id="eventForm">
+<label for="tema">Tema de la experiencia</label><select id="tema"><option value="SNACK_POLLO">Premios de pollo (seguimiento)</option></select>
+<label for="resultado">Experiencia observada</label><select id="resultado"><option value="RECHAZA">Rechaza (preferencia ficticia confirmada)</option></select>
+<label for="descripcion">Descripción del acontecimiento ficticio</label><textarea id="descripcion" required minlength="12" maxlength="1200" placeholder="Ej.: Luna Test rechazó premios ficticios de pollo en varias ocasiones durante dos semanas."></textarea>
+<label for="fuente">Fuente de la información</label><select id="fuente"><option value="PRUEBA_TECNICA_ADMINISTRADORA">Declaración ficticia de la administradora</option></select>
+<label for="modo">Alcance de la operación</label><select id="modo"><option value="actualizar">Seguimiento histórico + actualizar estado actual</option></select>
+<div id="confirmacionEstabilidad"><label class="checkbox"><input type="checkbox" id="estable">Confirmo que, solo para esta prueba ficticia, el rechazo de premios de pollo se ha repetido y cuenta con antecedentes suficientes para considerarlo el estado actual; no es alergia ni diagnóstico.</label></div>
+<div class="actions"><button type="submit">Preparar vista previa</button></div>
+</form>
+</div>
+<div id="vista" hidden>
+<h2>3. Revisar antes de guardar</h2>
+<p class="note">Esta vista previa todavía no ha guardado nada. Solo al pulsar <strong>Confirmar y registrar</strong> se enviará la operación.</p>
+<pre class="card" id="borrador"></pre>
+<label class="checkbox"><input type="checkbox" id="confirmar">Confirmo que se trata exclusivamente del PakuID ficticio Luna Test y autorizo registrar esta prueba en Supabase.</label>
+<div class="actions"><button type="button" id="guardar" disabled>Confirmar y registrar</button><button type="button" class="secondary" id="cancelar">Cancelar borrador</button></div>
+</div>
+<div id="resultadoBloque" hidden><h2>Resultado verificado</h2><pre class="card" id="resultadoRegistro"></pre><div class="actions"><button type="button" id="nueva">Preparar otra experiencia</button></div></div>
+</section>
+<div id="estado" role="status" aria-live="polite" class="status">Sin sesión activa. Ningún dato se ha registrado.</div>
+<p class="hint">La sesión es temporal, sin persistencia en localStorage. La aplicación registra operaciones solo por tu confirmación explícita. Si una operación falla, no asumas que se guardó hasta comprobar la respuesta y el historial.</p>
+</main>
+<script type="module">
+import {createClient} from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+const URL='https://uagudasyltikkqfwpshx.supabase.co';
+const TEST='36937747-409e-425b-bb8e-b4412cfda83e';
+const PREVIOUS_EVENT='d06d52a3-25d4-4e67-8065-e0a6575ada7f';
+const el=id=>document.getElementById(id);
+let client=null, verified=false, draft=null, busy=false, previousEventVerified=false;
+el('testId').textContent=TEST;
+const status=t=>el('estado').textContent=t;
+function show(id,on){el(id).hidden=!on;}
+function print(id,data){el(id).textContent=JSON.stringify(data,null,2);el(id).hidden=false;}
+function resetDraft(){draft=null;el('confirmar').checked=false;el('guardar').disabled=true;show('vista',false);}
+function clearAll(){resetDraft();verified=false;previousEventVerified=false;show('formBloque',false);show('resultadoBloque',false);el('anterior').hidden=true;el('descripcion').value='';}
+async function checkAdmin(){if(!client)throw Error('Sesión no disponible.');const{data,error}=await client.rpc('paku_soy_administradora');if(error||data!==true)throw Error('ACCESO_DENEGADO');}
+async function rpc(name,args){await checkAdmin();const{data,error}=await client.rpc(name,args);if(error){const e=new Error(error.message||'RPC_NO_COMPLETADA');e.code=error.code;throw e;}return data;}
+async function logout(){try{await client?.auth.signOut();}catch{}client=null;clearAll();show('trabajo',false);show('acceso',true);el('contrasena').value='';el('clave').value='';status('Sesión cerrada.');}
+el('loginForm').addEventListener('submit',async ev=>{ev.preventDefault();el('entrar').disabled=true;status('Comprobando la autorización administrativa…');try{const key=el('clave').value.trim();if(!key.startsWith('sb_publishable_'))throw Error('Usa exclusivamente una clave pública sb_publishable_.');client=createClient(URL,key,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});const{data,error}=await client.auth.signInWithPassword({email:el('correo').value.trim(),password:el('contrasena').value});if(error||!data?.session)throw error||Error('Sesión no confirmada.');await checkAdmin();show('acceso',false);show('trabajo',true);status('Acceso autorizado. Verifica Luna Test antes de preparar un registro.');}catch(err){status('Acceso no completado: '+(err?.message||'Error desconocido'));try{await client?.auth.signOut();}catch{}client=null;}finally{el('contrasena').value='';el('clave').value='';el('entrar').disabled=false;}});
+el('salir').addEventListener('click',logout);
+el('verificar').addEventListener('click',async()=>{el('verificar').disabled=true;clearAll();status('Comprobando identidad de Luna Test y lectura de memoria…');try{const rows=await rpc('paku_listar_perfiles');const found=Array.isArray(rows)?rows.filter(p=>p?.id===TEST && p?.pakurrijo==='Luna Test'):[];if(found.length!==1)throw Error('LUNA_TEST_NO_CONFIRMADA: no habilitamos escrituras.');const m=await rpc('paku_memoria_consultar',{p_pakuid:TEST});if(m?.pakuid_id!==TEST||!Array.isArray(m.eventos)||!Array.isArray(m.memoria_actual))throw Error('LECTURA_NO_VERIFICADA');
+const antecedente=m.eventos.find(e=>e.id===PREVIOUS_EVENT && e.categoria==='PREFERENCIA' && e.tema==='SNACK_POLLO' && e.datos?.resultado==='RECHAZA');
+if(!antecedente)throw Error('ANTECEDENTE_FICTICIO_NO_ENCONTRADO: no se habilitan escrituras.');
+if(m.memoria_actual.some(x=>x.categoria==='PREFERENCIA' && x.clave==='SNACK_POLLO'))throw Error('YA_EXISTE_MEMORIA_ACTUAL: revisar antes de realizar otra actualización.');
+previousEventVerified=true;verified=true;show('formBloque',true);print('anterior',{perfil_ficticio:found[0],memoria_actual:m.memoria_actual,eventos:m.eventos});status('Luna Test y el antecedente histórico se verificaron en Supabase. Puedes preparar el seguimiento ficticio.');}catch(err){status('Verificación fallida: '+err.message);}finally{el('verificar').disabled=false;}});
+el('modo').addEventListener('change',()=>{show('confirmacionEstabilidad',el('modo').value==='actualizar');resetDraft();});
+for(const id of ['tema','resultado','descripcion','fuente','estable']){el(id).addEventListener('input',resetDraft);el(id).addEventListener('change',resetDraft);}
+el('eventForm').addEventListener('submit',ev=>{ev.preventDefault();if(!verified||!previousEventVerified){status('Primero verifica Luna Test y su antecedente.');return;}const description=el('descripcion').value.trim();if(description.length<12){status('La descripción debe tener al menos 12 caracteres.');return;}const update=el('modo').value==='actualizar';if(update&&(!el('estable').checked||el('resultado').value==='NO_CONCLUYENTE')){status('No actualices el estado sin evidencia suficiente y una respuesta concluyente.');return;}
+const value={tema:el('tema').value,estado:el('resultado').value,nota:description};
+const data={resultado:el('resultado').value,comentario:description, ...(update?{estado_actual_propuesto:value}:{})};
+const operationId=crypto.randomUUID();
+draft={uuid:operationId,update,value,payload:{p_pakuid:TEST,p_id_operacion:operationId,p_categoria:'PREFERENCIA',p_tema:el('tema').value,p_descripcion:description,p_datos:data,p_evidencia:'DECLARADO',p_fuente:el('fuente').value,p_ocurrido_en:null,p_evento_relacionado_id:PREVIOUS_EVENT,p_tipo_relacion:'SEGUIMIENTO'}};
+print('borrador',{tipo:'Luna Test · Registro ficticio',id_operacion:operationId,operacion:update?'Seguimiento histórico + estado actual':'Solo historial',antecedente_id:PREVIOUS_EVENT,relacion:'SEGUIMIENTO',categoria:'PREFERENCIA',tema:draft.payload.p_tema,descripcion:description,resultado:value.estado,fuente:draft.payload.p_fuente,informacion_a_guardar:draft.payload.p_datos});show('vista',true);show('resultadoBloque',false);el('confirmar').checked=false;el('guardar').disabled=true;status('Borrador preparado. No se ha enviado ninguna escritura.');});
+el('confirmar').addEventListener('change',()=>{el('guardar').disabled=!el('confirmar').checked||!draft||busy;});
+el('cancelar').addEventListener('click',()=>{resetDraft();status('Borrador cancelado. No se guardó nada.');});
+el('guardar').addEventListener('click',async()=>{if(!draft||busy||!el('confirmar').checked||!verified||!previousEventVerified)return;busy=true;el('guardar').disabled=true;status('Registrando en Supabase; conserva esta página abierta…');const d=draft;
+try{await checkAdmin();const first=await rpc('paku_memoria_registrar_evento',d.payload);if(!['REGISTRADO','YA_REGISTRADO'].includes(first?.estado)||!first?.evento_id)throw Error('REGISTRO_NO_CONFIRMADO');let second=null;
+if(d.update){const memory=await rpc('paku_memoria_consultar',{p_pakuid:TEST});const rec=memory?.memoria_actual?.find(x=>x.categoria==='PREFERENCIA'&&x.clave===d.payload.p_tema);const expected=rec?rec.version:0;second=await rpc('paku_memoria_actualizar',{p_pakuid:TEST,p_categoria:'PREFERENCIA',p_clave:d.payload.p_tema,p_valor_actual:d.value,p_evento_fuente_id:first.evento_id,p_version_esperada:expected});if(!['ACTUALIZADO','YA_ACTUALIZADO'].includes(second?.estado))throw Error('ACTUALIZACION_NO_CONFIRMADA');}
+const snapshot=await rpc('paku_memoria_consultar',{p_pakuid:TEST});const persisted=Array.isArray(snapshot?.eventos)&&snapshot.eventos.some(x=>x.id===first.evento_id && x.evento_relacionado_id===PREVIOUS_EVENT && x.tipo_relacion==='SEGUIMIENTO');
+if(!persisted)throw Error('REGISTRO_RESPONDIO_PERO_NO_SE_PUDO_VERIFICAR_EL_SEGUIMIENTO');
+if(d.update){const actual=snapshot.memoria_actual?.find(x=>x.categoria==='PREFERENCIA' && x.clave==='SNACK_POLLO');
+if(!actual || actual.evento_fuente_id!==first.evento_id || actual.valor?.tema!==d.value.tema || actual.valor?.estado!==d.value.estado || actual.valor?.nota!==d.value.nota)throw Error('MEMORIA_ACTUAL_NO_VERIFICADA: posible exito parcial.');}
+print('resultadoRegistro',{evento:first,actualizacion:second,lectura_posterior:'Evento confirmado en historial',total_eventos:snapshot.eventos.length});show('vista',false);show('resultadoBloque',true);status('Guardado confirmado por Supabase. Se verificó el seguimiento vinculado y el estado actual de Luna Test.');draft=null;
+}catch(err){status('ATENCIÓN: operación no completada o parcialmente completada. '+err.message+' Conserva el mismo borrador e identificador si vas a reintentar; consulta memoria antes de iniciar una operación nueva.');el('guardar').disabled=false;}finally{busy=false;}});
+el('nueva').addEventListener('click',()=>{resetDraft();show('resultadoBloque',false);el('descripcion').value='';status('Puedes preparar un nuevo borrador ficticio, después de comprobar el estado actual.');});
+window.addEventListener('pagehide',()=>{el('clave').value='';el('contrasena').value='';});
+</script>
+</body>
+</html>
