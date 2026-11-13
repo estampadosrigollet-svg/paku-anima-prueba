@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src &#x27;none&#x27;; base-uri &#x27;none&#x27;; object-src &#x27;none&#x27;; form-action &#x27;none&#x27;; connect-src https://uagudasyltikkqfwpshx.supabase.co; img-src data:; script-src &#x27;sha256-JI93zaMh00w93DVOoRwklwIak+5OXPDWYygJ6o4XSe0=&#x27;; style-src &#x27;sha256-ytXSRHZozefGHLhb0MD/gxuHrMwX+k8bfRq5Hub7Xvk=&#x27;; upgrade-insecure-requests">
+<meta name="color-scheme" content="light">
+<title>ANIMA · Verificación administradora</title>
+<style>
+:root{font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif;color:#18313a;background:#f1f5f6}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;padding:26px 16px;display:flex;justify-content:center}
+main{width:100%;max-width:550px}
+header{margin:12px 0 24px}
+.brand{font-size:12px;letter-spacing:.19em;font-weight:800;color:#20767c}
+h1{font-size:26px;line-height:1.25;margin:12px 0}
+h2{font-size:21px;margin:0 0 7px}
+.sub{color:#526670;font-size:14px;line-height:1.6}
+.panel{border:1px solid #dbe5e8;border-radius:16px;background:#fff;padding:23px;box-shadow:0 5px 24px #18313a0d}
+.stack{display:flex;flex-direction:column;gap:14px}
+label{font-size:13px;font-weight:700;display:block;margin-bottom:6px}
+input{display:block;width:100%;font-size:16px;padding:12px 13px;border:1px solid #b7cbd0;border-radius:9px;background:#fff;color:#152f39}
+input:focus-visible,button:focus-visible{outline:3px solid #83c9d0;outline-offset:2px}
+button{border:0;border-radius:10px;background:#155e68;color:#fff;font-size:15px;font-weight:700;cursor:pointer;min-height:45px;padding:12px 15px}
+button.secondary{background:#e9f1f1;color:#155e68;border:1px solid #c7d9dc}
+button.ghost{background:transparent;color:#285e66;text-decoration:underline;padding:4px 0;min-height:unset}
+button:disabled{opacity:.5;cursor:wait}
+[hidden]{display:none!important}
+.status{font-size:14px;font-weight:600;border-radius:10px;padding:11px 14px;margin:0 0 20px}
+.neutral{background:#e8f1f2;color:#305d63}
+.error{background:#ffefed;color:#883f34}
+.ok{background:#e9f5ec;color:#216b42}
+.info{background:#f0f6f6;border-radius:10px;border:1px solid #dbe7e7;padding:13px;font-size:13px;line-height:1.5;color:#3c5960}
+.row{display:flex;gap:12px;justify-content:space-between;align-items:center}
+ol{padding-left:21px;color:#4a626c;line-height:1.6;font-size:14px}
+.qr{display:block;margin:15px auto;max-width:230px;width:100%;height:auto;background:#fff;border-radius:9px;border:1px solid #d9e3e6;padding:10px}
+.secret{font-family:ui-monospace,Consolas,monospace;font-size:14px;letter-spacing:.06em;overflow-wrap:anywhere;background:#eef3f5;padding:14px;border-radius:8px;user-select:all}
+hr{border:0;border-top:1px solid #e2e9e9;margin:19px 0}
+small{font-size:12px;color:#60727a;line-height:1.5}
+</style>
+</head>
+<body>
+<main>
+<header><div class="brand">PAKU · ANIMA</div><h1>Protege tu cuenta administradora</h1><p class="sub">Activa la verificación en dos pasos para ANIMA mediante Supabase Auth. Esta página no modifica el catálogo ni los PakuID.</p></header>
+<div id="status" class="status neutral" role="status" aria-live="polite">Acceso exclusivo de la administradora de ANIMA.</div>
+<section id="login" class="panel">
+<h2>Iniciar sesión</h2>
+<p class="sub">Utiliza el correo y la contraseña de ANIMA, que pueden ser distintos a los de tu cuenta de Supabase.</p>
+<form id="loginForm" class="stack">
+<div><label for="email">Correo de ANIMA</label><input id="email" type="email" autocomplete="username" inputmode="email" required></div>
+<div><label for="password">Contraseña de ANIMA</label><input id="password" type="password" autocomplete="current-password" required></div>
+<button id="loginButton" type="submit">Verificar mi acceso</button>
+</form>
+</section>
+<section id="mfa" class="panel" hidden>
+<div class="row"><h2>Configuración MFA</h2><button id="logoutButton" class="ghost" type="button">Salir</button></div>
+<p class="sub">La identidad y el permiso administrativo se comprueban antes de configurar el factor TOTP.</p>
+<div id="factorNew" hidden>
+<p class="info">Puedes utilizar Google Authenticator, Microsoft Authenticator o una aplicación TOTP equivalente. Supabase Auth no ofrece códigos de recuperación, por lo que es recomendable configurar un segundo factor de respaldo.</p>
+<p><button id="enrollButton" type="button">Generar mi código QR</button></p>
+<div id="enrollDetails" hidden>
+<hr>
+<ol><li>Abre tu aplicación autenticadora.</li><li>Escanea este QR. En el mismo teléfono puedes introducir manualmente la clave.</li><li>Escribe abajo los seis dígitos que muestra la aplicación.</li></ol>
+<img id="qr" class="qr" alt="QR temporal de configuración TOTP" hidden>
+<p class="sub">Clave para registro manual. <strong>No la compartas.</strong></p>
+<div id="secret" class="secret"></div>
+<p><small>Ni el QR ni la clave deben enviarse a ChatGPT, correo o capturas.</small></p>
+</div>
+</div>
+<div id="factorExisting" hidden><p class="info">Esta cuenta ya tiene MFA. Introduce el código generado por tu aplicación para verificar esta sesión.</p></div>
+<form id="verifyForm" class="stack" hidden>
+<div><label for="otp">Código temporal (6 dígitos)</label><input id="otp" type="text" inputmode="numeric" maxlength="6" minlength="6" pattern="[0-9]{6}" autocomplete="one-time-code" required></div>
+<button id="verifyButton" type="submit">Confirmar autenticador</button>
+</form>
+<div id="completed" hidden>
+<p class="status ok">MFA verificado correctamente. Tu sesión alcanzó el nivel AAL2.</p>
+<p class="sub">La verificación se ha realizado en Supabase Auth. ANIMA conserva sus permisos actuales hasta que se apruebe un refuerzo definitivo.</p>
+<p class="info">Es recomendable registrar otro autenticador de respaldo antes de exigir MFA para todas las operaciones sensibles. La verificación inicial puede cerrar sesiones anteriores y requerir reconectar ANIMA.</p>
+</div>
+</section>
+<p class="sub"><small>Portal estático: tus credenciales se envían directamente a Supabase Auth mediante HTTPS. No se utilizan bibliotecas de terceros ni se guardan contraseñas, claves temporales o sesiones en el almacenamiento del navegador.</small></p>
+</main>
+<script>
+"use strict";
+// Las credenciales, el token, el código y el secreto TOTP solo permanecen en esta pestaña.
+const API = "https://uagudasyltikkqfwpshx.supabase.co";
+const PUBLISHABLE_KEY = "sb_publishable_YmcMQcL-me2a9MktZpMJaw_r0DvPQJF";
+let session = null;
+let factorId = null;
+const el = (id) => document.getElementById(id);
+const show = (id, visible) => { el(id).hidden = !visible; };
+function status(message, kind="neutral") {
+  const box=el("status");box.textContent=message;box.className="status "+kind;
+}
+function headers(useToken=true) {
+  const h={"apikey":PUBLISHABLE_KEY,"Content-Type":"application/json","Accept":"application/json"};
+  if(useToken && session?.access_token)h.Authorization="Bearer "+session.access_token;
+  return h;
+}
+async function call(method, path, body, useToken=true) {
+  const res=await fetch(API+path,{
+    method,headers:headers(useToken),mode:"cors",credentials:"omit",redirect:"error",
+    referrerPolicy:"no-referrer",cache:"no-store",
+    body:body===undefined?undefined:JSON.stringify(body)
+  });
+  let data=null;
+  try{data=await res.json();}catch{}
+  if(!res.ok)throw Error("La operación fue rechazada por Supabase Auth.");
+  return data;
+}
+function aalOf(jwt){
+  try{const data=JSON.parse(atob(jwt.split(".")[1].replace(/-/g,"+").replace(/_/g,"/")));return data.aal??"desconocido";}
+  catch{return "desconocido";}
+}
+async function authenticatedUser(){
+  const user=await call("GET","/auth/v1/user");
+  if(!user?.id)throw Error("Sesión inválida");
+  return user;
+}
+async function authorizeAdmin(){
+  const allowed=await call("POST","/rest/v1/rpc/paku_soy_administradora",{});
+  if(allowed!==true)throw Error("Acceso administrativo no autorizado");
+}
+async function signOut(){
+  if(session){try{await call("POST","/auth/v1/logout?scope=local",{});}catch{}}
+  session=null;factorId=null;
+  el("password").value="";el("otp").value="";el("secret").textContent="";
+  el("qr").removeAttribute("src");
+  for(const name of ["factorNew","factorExisting","verifyForm","enrollDetails","completed"]){show(name,false);}
+  show("mfa",false);show("login",true);
+  status("Sesión cerrada. Los datos temporales se han descartado.");
+}
+async function accessMfa(){
+  const user=await authenticatedUser();
+  await authorizeAdmin();
+  show("login",false);show("mfa",true);
+  const factors=Array.isArray(user.factors)?user.factors:[];
+  const active=factors.find(f=>(f.factor_type==="totp"||f.type==="totp")&&f.status==="verified");
+  if(active){
+    factorId=active.id;
+    show("factorNew",false);show("factorExisting",true);show("verifyForm",true);
+    status("Cuenta administradora verificada. Confirma tu factor MFA existente.","ok");
+  }else{
+    factorId=null;
+    show("factorNew",true);show("factorExisting",false);show("verifyForm",false);
+    status("Cuenta administradora verificada. Puedes configurar MFA.","ok");
+  }
+}
+el("loginForm").addEventListener("submit",async(event)=>{
+  event.preventDefault();const btn=el("loginButton");if(btn.disabled)return;
+  btn.disabled=true;status("Comprobando credenciales en Supabase Auth...");
+  try{
+    const email=el("email").value.trim().toLowerCase();
+    const password=el("password").value;
+    const data=await call("POST","/auth/v1/token?grant_type=password",{email,password},false);
+    if(!data?.access_token)throw Error("Sin token");
+    session={access_token:data.access_token,refresh_token:data.refresh_token??null};
+    el("password").value="";
+    await accessMfa();
+  }catch{
+    el("password").value="";
+    if(session){try{await call("POST","/auth/v1/logout?scope=local",{});}catch{}}
+    session=null;show("login",true);show("mfa",false);
+    status("No se pudo validar la cuenta administradora de ANIMA. Comprueba las credenciales.","error");
+  }finally{btn.disabled=false;}
+});
+el("enrollButton").addEventListener("click",async()=>{
+  const btn=el("enrollButton");if(btn.disabled||!session)return;
+  btn.disabled=true;status("Generando factor TOTP en Supabase Auth...");
+  try{
+    await authorizeAdmin();
+    const data=await call("POST","/auth/v1/factors",{factor_type:"totp",friendly_name:"ANIMA Administradora"});
+    if(!data?.id||!data?.totp?.secret)throw Error("Factor incompleto");
+    factorId=data.id;
+    const qr=data.totp.qr_code??"";
+    if(/^data:image\/(?:svg\+xml|png);/i.test(qr)){
+      el("qr").src=qr;show("qr",true);
+    }else{show("qr",false);}
+    el("secret").textContent=data.totp.secret;
+    show("enrollDetails",true);show("verifyForm",true);
+    status("Factor creado. Introduce el código generado por tu autenticador.");
+  }catch{status("No fue posible generar el factor. Verifica la sesión y vuelve a intentarlo.","error");}
+  finally{btn.disabled=false;}
+});
+el("verifyForm").addEventListener("submit",async(event)=>{
+  event.preventDefault();const btn=el("verifyButton");if(btn.disabled||!session||!factorId)return;
+  const code=el("otp").value.trim();
+  if(!/^[0-9]{6}$/.test(code)){status("El código debe contener seis dígitos.","error");return;}
+  btn.disabled=true;status("Comprobando el código MFA...");
+  try{
+    const path="/auth/v1/factors/"+encodeURIComponent(factorId);
+    const challenge=await call("POST",path+"/challenge",{});
+    if(!challenge?.id)throw Error("Desafío inválido");
+    const verified=await call("POST",path+"/verify",{challenge_id:challenge.id,code});
+    if(verified?.access_token)session={access_token:verified.access_token,refresh_token:verified.refresh_token??null};
+    const user=await authenticatedUser();
+    await authorizeAdmin();
+    const active=(Array.isArray(user.factors)?user.factors:[]).some(f=>f.id===factorId&&f.status==="verified");
+    if(!active||aalOf(session.access_token)!=="aal2")throw Error("AAL2 no confirmado");
+    el("secret").textContent="";el("qr").removeAttribute("src");el("otp").value="";
+    show("factorNew",false);show("factorExisting",false);show("enrollDetails",false);
+    show("verifyForm",false);show("completed",true);
+    status("MFA verificado correctamente. Sesión AAL2 confirmada.","ok");
+  }catch{
+    el("otp").value="";
+    status("La verificación no se completó. Usa un código nuevo de tu aplicación.","error");
+  }finally{btn.disabled=false;}
+});
+el("logoutButton").addEventListener("click",signOut);
+</script>
+</body>
+</html>
