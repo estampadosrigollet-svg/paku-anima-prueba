@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow">
   <meta name="referrer" content="no-referrer">
-  <title>PAKU · Autorizar ANIMA</title>
+  <title>PAKU · Autorizar ANIMA con MFA</title>
   <style>
     :root { color-scheme: light; }
     * { box-sizing: border-box; }
@@ -17,7 +17,7 @@
     small, .muted { color: #637779; }
     label { display: block; margin-top: 16px; font-weight: 650; }
     input { display: block; width: 100%; padding: 13px 12px; font: inherit; margin-top: 6px; border: 1px solid #bacdcb; border-radius: 9px; }
-    button { font: inherit; font-weight: 650; border: 0; border-radius: 10px; padding: 13px 16px; cursor: pointer; }
+    button { font: inherit; font-weight: 650; border: 0; border-radius: 10px; padding: 13px 16px; cursor: pointer; min-height: 44px; }
     button:disabled { opacity: .55; cursor: not-allowed; }
     .primary { background: #167477; color: white; width: 100%; margin-top: 22px; }
     .secondary { background: #e9efed; color: #214547; }
@@ -29,6 +29,7 @@
     .meta b { display: block; font-size: .9rem; }
     .foot { font-size: .85rem; margin-top: 24px; }
     [hidden] { display: none !important; }
+    #totp-code { letter-spacing: .17em; font-variant-numeric: tabular-nums; }
     @media (max-width: 370px) { .choices { grid-template-columns: 1fr; } }
   </style>
 </head>
@@ -37,6 +38,7 @@
     <h1>PAKU</h1>
     <p class="muted">ANIMA · AUTORIZACIÓN PRIVADA</p>
     <p>Esta pantalla es exclusivamente para la administradora de PAKU. Los clientes no deben utilizarla.</p>
+
     <section id="login">
       <h2>Verificar tu identidad</h2>
       <p class="muted">Accede con la cuenta administrativa de Supabase. No uses una clave secreta.</p>
@@ -50,9 +52,21 @@
         <button id="sign-in" class="primary" type="submit">Verificar acceso</button>
       </form>
     </section>
+
+    <section id="mfa-step" hidden>
+      <h2>Verificar con Google Authenticator</h2>
+      <p>Tu cuenta administradora fue reconocida. Antes de autorizar ChatGPT, abre Google Authenticator y utiliza el código de seis dígitos de la cuenta <strong>PAKU</strong>.</p>
+      <form id="form-mfa">
+        <label for="totp-code">Código temporal (6 dígitos)</label>
+        <input id="totp-code" type="text" inputmode="numeric" pattern="[0-9]{6}" minlength="6" maxlength="6" autocomplete="one-time-code" required>
+        <button id="verify-mfa" class="primary" type="submit">Verificar identidad con MFA</button>
+      </form>
+      <p class="muted"><small>El código se verifica directamente con Supabase Auth. No lo compartas por chat, correo o capturas.</small></p>
+    </section>
+
     <section id="consent" hidden>
       <h2>Solicitud de acceso a PAKU</h2>
-      <p>Revisa quién está solicitando acceder a tu cuenta. Autoriza únicamente una conexión que reconozcas.</p>
+      <p>Tu identidad se verificó con MFA (nivel AAL2). Revisa quién está solicitando acceder a tu cuenta. Autoriza únicamente una conexión que reconozcas.</p>
       <div class="meta">
         <div><b>Aplicación solicitante</b><span id="client-name"></span></div>
         <div><b>Dirección de retorno</b><span id="redirect"></span></div>
@@ -64,9 +78,11 @@
         <button id="approve" class="primary" type="button" style="margin-top:0">Autorizar</button>
       </div>
     </section>
+
     <p id="status" class="status" role="status" aria-live="polite"></p>
-    <p class="foot">Solo se emplea la clave pública del proyecto. No se registran contraseñas ni tokens en archivos, repositorios o mensajes.</p>
+    <p class="foot">Solo se emplea la clave pública del proyecto. No se registran contraseñas, códigos, tokens ni secretos en archivos, repositorios o mensajes.</p>
   </main>
+
   <script type="module">
     import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 
@@ -78,17 +94,87 @@
     let supabase = null;
     let verified = false;
     let details = null;
+    let mfaFactorId = null;
 
     const safeRedirect = url => {
-      // El enlace proviene de Supabase Auth tras validar OAuth; no viene de un parámetro libre de la página.
+      // Solo redirigir a una URL HTTPS devuelta por Supabase Auth tras validar OAuth.
       const parsed = new URL(url);
-      if (parsed.protocol !== "https:") throw new Error("Redirección no HTTPS: verificar configuración OAuth.");
+      if (parsed.protocol !== "https:") {
+        throw new Error("Redirección no HTTPS: verifica la configuración OAuth.");
+      }
       location.assign(parsed.href);
     };
 
+    const resetConsent = () => {
+      verified = false;
+      details = null;
+      el("consent").hidden = true;
+    };
+
+    async function ensureAal2() {
+      if (!supabase) throw new Error("Sesión de ANIMA no disponible.");
+      const identity = await supabase.auth.getUser();
+      if (identity.error || !identity.data?.user) {
+        throw identity.error || new Error("La identidad ya no está verificada.");
+      }
+      const assurance = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+      if (assurance.error || assurance.data?.currentLevel !== "aal2") {
+        throw new Error("Falta la verificación de Google Authenticator (AAL2).");
+      }
+      const access = await supabase.rpc("paku_soy_administradora");
+      if (access.error || access.data !== true) {
+        throw new Error("La cuenta ya no tiene autorización administrativa activa.");
+      }
+    }
+
+    async function showConsentAfterMfa() {
+      await ensureAal2();
+      const request = await supabase.auth.oauth.getAuthorizationDetails(authorizationId);
+      if (request.error || !request.data) {
+        throw request.error || new Error("No se pudo consultar la solicitud OAuth.");
+      }
+      // Algunas autorizaciones previas devuelven una URL directamente: AAL2 ya fue exigido arriba.
+      if (!("authorization_id" in request.data)) {
+        safeRedirect(request.data.redirect_url);
+        return;
+      }
+      details = request.data;
+      el("client-name").textContent = details.client?.name || "Cliente sin nombre: verificar antes de aprobar";
+      el("redirect").textContent = details.redirect_uri || "No informado";
+      el("scopes").textContent = details.scope || "Sin ámbitos declarados";
+      el("login").hidden = true;
+      el("mfa-step").hidden = true;
+      el("consent").hidden = false;
+      verified = true;
+      status("Verificación MFA AAL2 confirmada. Revisa la solicitud antes de decidir.");
+    }
+
+    async function startMfa() {
+      resetConsent();
+      mfaFactorId = null;
+      const listed = await supabase.auth.mfa.listFactors();
+      if (listed.error) throw listed.error;
+      // data.totp contiene los factores TOTP habilitados/verificados para el usuario.
+      const factors = Array.isArray(listed.data?.totp) ? listed.data.totp : [];
+      const factor = factors.find(f => f?.id && f.factor_type === "totp");
+      if (!factor) {
+        throw new Error("No existe un autenticador TOTP verificado en esta cuenta. Configura MFA antes de continuar.");
+      }
+      mfaFactorId = factor.id;
+      const assurance = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+      if (assurance.error) throw assurance.error;
+      if (assurance.data?.currentLevel === "aal2") {
+        await showConsentAfterMfa();
+        return;
+      }
+      el("login").hidden = true;
+      el("mfa-step").hidden = false;
+      status("Introduce un código nuevo de Google Authenticator para autorizar ChatGPT.");
+    }
+
     if (!authorizationId || authorizationId.length > 1024) {
       el("login").hidden = true;
-      status("No hay una solicitud de autorización válida. Abre esta página desde el proceso de conexión MCP de ChatGPT.");
+      status("No hay una solicitud OAuth válida. Abre esta página desde la conexión de ANIMA en ChatGPT.");
     } else {
       status("Solicitud recibida. Verifica tu identidad para revisarla.");
     }
@@ -96,12 +182,14 @@
     el("form-login").addEventListener("submit", async event => {
       event.preventDefault();
       if (!authorizationId || authorizationId.length > 1024) return;
-      el("sign-in").disabled = true;
-      status("Validando identidad administrativa...");
+      const button = el("sign-in");
+      if (button.disabled) return;
+      button.disabled = true;
+      status("Validando la identidad administrativa...");
       try {
         const key = el("public-key").value.trim();
         if (!/^sb_publishable_[A-Za-z0-9_-]+$/.test(key)) {
-          throw new Error("Usa solo la clave pública sb_publishable_ del proyecto Paku-desarrollo.");
+          throw new Error("Usa únicamente una clave pública sb_publishable_ de PAKU.");
         }
         supabase = createClient(PROJECT_URL, key, {
           auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
@@ -117,35 +205,49 @@
         if (identity.error || !identity.data?.user) {
           throw identity.error || new Error("La identidad no pudo verificarse.");
         }
-        const access = await supabase.rpc("paku_soy_administradora");
-        if (access.error || access.data !== true) {
-          throw new Error("ACCESO_DENEGADO: esta cuenta no está autorizada para administrar PAKU.");
+        const admin = await supabase.rpc("paku_soy_administradora");
+        if (admin.error || admin.data !== true) {
+          throw new Error("ACCESO_DENEGADO: la cuenta no es administradora de ANIMA.");
         }
-        verified = true;
-        const request = await supabase.auth.oauth.getAuthorizationDetails(authorizationId);
-        if (request.error || !request.data) {
-          throw request.error || new Error("No se pudo consultar la solicitud OAuth.");
-        }
-        if (!("authorization_id" in request.data)) {
-          // Supabase Auth informa que el consentimiento existe y aporta su URL de retorno.
-          safeRedirect(request.data.redirect_url);
-          return;
-        }
-        details = request.data;
-        el("client-name").textContent = details.client?.name || "Cliente sin nombre: verificar antes de aprobar";
-        el("redirect").textContent = details.redirect_uri || "No informado";
-        el("scopes").textContent = details.scope || "Sin ámbitos declarados";
-        el("login").hidden = true;
-        el("consent").hidden = false;
-        status("Acceso administrativo comprobado. Revisa la solicitud antes de decidir.");
+        await startMfa();
       } catch (error) {
-        verified = false;
-        el("consent").hidden = true;
+        resetConsent();
+        mfaFactorId = null;
+        el("mfa-step").hidden = true;
+        el("login").hidden = false;
         status("No fue posible continuar: " + (error?.message || "error desconocido"));
         if (supabase) { try { await supabase.auth.signOut(); } catch (_) {} }
       } finally {
         el("password").value = "";
-        el("sign-in").disabled = false;
+        button.disabled = false;
+      }
+    });
+
+    el("form-mfa").addEventListener("submit", async event => {
+      event.preventDefault();
+      if (!supabase || !mfaFactorId || !authorizationId) return;
+      const button = el("verify-mfa");
+      const input = el("totp-code");
+      if (button.disabled) return;
+      const code = input.value.trim();
+      if (!/^[0-9]{6}$/.test(code)) {
+        status("El código de Google Authenticator debe contener seis dígitos.");
+        return;
+      }
+      button.disabled = true;
+      status("Validando el segundo factor directamente con Supabase Auth...");
+      try {
+        const result = await supabase.auth.mfa.challengeAndVerify({factorId: mfaFactorId, code});
+        input.value = "";
+        if (result.error) throw result.error;
+        await showConsentAfterMfa();
+      } catch (_) {
+        resetConsent();
+        input.value = "";
+        el("mfa-step").hidden = false;
+        status("El código MFA no pudo verificarse. Utiliza un código vigente y vuelve a intentar.");
+      } finally {
+        button.disabled = false;
       }
     });
 
@@ -153,8 +255,9 @@
       if (!verified || !supabase || !details || !authorizationId) return;
       el("approve").disabled = true;
       el("deny").disabled = true;
-      status(approval ? "Autorizando conexión..." : "Rechazando solicitud...");
+      status(approval ? "Autorizando la conexión..." : "Rechazando la solicitud...");
       try {
+        if (approval) await ensureAal2();
         const outcome = approval
           ? await supabase.auth.oauth.approveAuthorization(authorizationId)
           : await supabase.auth.oauth.denyAuthorization(authorizationId);
