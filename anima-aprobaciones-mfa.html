@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; connect-src https://uagudasyltikkqfwpshx.supabase.co; script-src 'sha256-ZYlhSiYPDhfiH5tG2s7A6WAFwV806gDv4PjG5zzdBDM='; style-src 'sha256-KvyefMM+dQSn52GGeuRUl5atklKos6jWSJjXInMBCps='; img-src 'none'; object-src 'none'">
+<title>PAKU · ANIMA | Aprobaciones MFA (piloto)</title>
+<style>:root{color-scheme:light;--ink:#18383c;--muted:#5a7075;--line:#d8e4e5;--teal:#176b73;--soft:#eff7f5;--cream:#f8f6f1;--bad:#a53f36;--good:#21633d}
+*{box-sizing:border-box}body{margin:0;padding:24px 16px 50px;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--cream);color:var(--ink)}
+main{max-width:660px;margin:auto}.eyebrow{font-size:13px;font-weight:800;letter-spacing:.17em;color:#11767d;margin:8px 0 6px}h1{font-size:clamp(25px,5vw,34px);margin:12px 0;line-height:1.16}h2{font-size:20px;margin:0 0 9px}h3{font-size:16px;margin:0 0 8px}p{line-height:1.55}small,.muted{color:var(--muted)}.muted{font-size:14px}header{margin-bottom:24px}.card{background:white;border:1px solid var(--line);border-radius:16px;padding:24px;box-shadow:0 8px 20px #104a4a0d;margin-bottom:16px}
+.stack{display:grid;gap:14px}.field label{font-size:14px;font-weight:700;display:block;margin:0 0 7px}input:not([type="checkbox"]){width:100%;padding:13px 12px;border:1px solid #acc6c9;border-radius:9px;background:white;color:var(--ink);font-size:16px;min-height:46px}input:focus-visible,button:focus-visible{outline:3px solid #8dcad1;outline-offset:3px}button{border:0;background:var(--teal);color:white;padding:12px 18px;border-radius:10px;min-height:44px;font-size:15px;font-weight:720;cursor:pointer}button:disabled{opacity:.5;cursor:not-allowed}.secondary{background:#eaf3f2;color:#19525a;border:1px solid #c8dedd}.danger{background:#8e403b}.horizontal{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}.status{border-radius:11px;padding:14px 16px;margin:16px 0;background:#edf4f3;color:#315b61;font-weight:600;font-size:14px;line-height:1.5}.status.ok{background:#eaf7ec;color:var(--good)}.status.error{background:#fff0ee;color:var(--bad)}.tag{display:inline-block;border-radius:99px;background:#e7f1ee;padding:5px 9px;font-size:12px;font-weight:700}.item{width:100%;display:block;text-align:left;background:#fff;border:1px solid var(--line);color:var(--ink);margin-top:10px;padding:14px;border-radius:10px}.item:hover,.item:focus-visible{border-color:var(--teal);background:#f1f8f6}.item strong,.item span{display:block}.item span{font-size:12px;color:#64797d;margin-top:5px}.notice{font-size:14px;border-left:3px solid var(--teal);padding:10px 14px;background:#eff7f5;line-height:1.55}.detail{display:grid;grid-template-columns: minmax(100px,145px) 1fr;gap:9px 12px;font-size:14px;line-height:1.5}.detail dt{font-weight:700;color:var(--muted)}.detail dd{margin:0;min-width:0;overflow-wrap:anywhere}.json{padding:12px;background:#f3f7f7;border:1px solid var(--line);border-radius:10px;white-space:pre-wrap;word-break:break-word;overflow:auto;font-size:12px;line-height:1.6;max-height:250px}.confirm{display:flex;align-items:flex-start;gap:9px;background:#f3f8f7;border:1px solid var(--line);border-radius:9px;padding:13px;margin:18px 0 13px}.confirm input{margin-top:4px;min-width:18px;min-height:18px}.confirm label{font-size:14px;line-height:1.5}.buttons{display:flex;gap:9px;flex-wrap:wrap}.breakline{border:0;border-top:1px solid #d8e4e5;margin:24px 0}.foot{font-size:12px;color:#5b7478;margin:19px 3px;line-height:1.65}.secret-warning{border:1px solid #e3d6c7;background:#fff9ed;border-radius:10px;padding:11px 14px;font-size:13px;line-height:1.5}section[hidden],div[hidden],p[hidden],button[hidden]{display:none!important}@media(max-width:480px){body{padding:20px 12px}.card{padding:19px}.detail{grid-template-columns:1fr;gap:4px}.detail dd{margin-bottom:10px}}</style>
+</head>
+<body>
+<main>
+<header>
+<div class="eyebrow">PAKU · ANIMA</div>
+<h1>Aprobaciones con MFA</h1>
+<p class="muted">Panel privado de pruebas. Revisa exactamente qué operación solicita ChatGPT y apruébala usando tu Google Authenticator.</p>
+</header>
+<p id="status" class="status" role="status" aria-live="polite">Solo administradora de ANIMA. Accede utilizando tu cuenta administrativa.</p>
+<section id="login" class="card">
+<h2>1. Identificar a la administradora</h2>
+<p class="muted">Ingresa el mismo correo y contraseña utilizados para proteger ANIMA. Nunca utilices claves de servicio.</p>
+<form id="login-form" class="stack">
+<div class="field"><label for="email">Correo de ANIMA</label><input type="email" id="email" autocomplete="username" required></div>
+<div class="field"><label for="password">Contraseña</label><input type="password" id="password" autocomplete="current-password" required></div>
+<button id="login-btn" type="submit">Verificar cuenta</button>
+</form>
+</section>
+<section id="factor" class="card" hidden>
+<h2>2. Verificar Google Authenticator</h2>
+<p>Abre Google Authenticator y utiliza el código actual de la cuenta que llamaste <strong>PAKU</strong>.</p>
+<form id="factor-form" class="stack">
+<div class="field"><label for="totp">Código de seis dígitos</label><input id="totp" type="text" inputmode="numeric" maxlength="6" minlength="6" pattern="[0-9]{6}" autocomplete="one-time-code" required></div>
+<button id="factor-btn" type="submit">Verificar MFA</button>
+</form>
+<p class="muted">No envíes códigos por ChatGPT ni captures esta pantalla mientras ingresas el código.</p>
+</section>
+<section id="panel" hidden>
+<div class="card">
+<div class="horizontal"><h2>3. Solicitudes de prueba</h2><button id="logout-btn" class="secondary" type="button">Cerrar sesión</button></div>
+<p class="notice">Prototipo sin integración con las escrituras existentes. Una aprobación aquí <strong>no registra eventos, no modifica PakuID y no ejecuta acciones comerciales.</strong></p>
+<div class="buttons"><button id="load-btn" type="button" class="secondary">Actualizar lista</button></div>
+<div id="results" aria-live="polite"></div>
+<hr class="breakline">
+<h3>Buscar solicitud por identificador</h3>
+<form id="search-form" class="stack">
+<div class="field"><label for="solicitud">ID de solicitud (UUID)</label><input id="solicitud" placeholder="00000000-0000-0000-0000-000000000000" type="text" autocomplete="off" spellcheck="false" required></div>
+<button type="submit" class="secondary">Revisar solicitud</button>
+</form>
+</div>
+<div id="detail" class="card" hidden>
+<h2>4. Revisar antes de aprobar</h2>
+<dl id="details" class="detail"></dl>
+<h3>Parámetros exactos de la solicitud</h3>
+<pre id="payload" class="json"></pre>
+<div id="approval-controls" hidden>
+<div class="secret-warning">Solo aprueba si reconoces la acción, la mascota, los parámetros y el resumen. La aprobación caduca y no se puede reutilizar.</div>
+<div class="confirm"><input id="approve-check" type="checkbox"><label for="approve-check">Confirmo que revisé esta solicitud de prueba y que deseo aprobar solamente esta operación.</label></div>
+<button id="approve-btn" disabled type="button">Aprobar solicitud de prueba</button>
+</div>
+</div>
+</section>
+<p class="foot">La página HTML puede consultarse públicamente, pero los datos y controles están protegidos en Supabase mediante sesión administrativa y MFA AAL2. Las credenciales y códigos se envían directamente a Supabase Auth por HTTPS; no se guardan en el navegador ni se envían a ChatGPT. El prototipo no permite consumir autorizaciones ni ejecutar escrituras de negocio.</p>
+</main>
+<script>'use strict';
+const ORIGIN='https://uagudasyltikkqfwpshx.supabase.co';
+const PUB='sb_publishable_YmcMQcL-me2a9MktZpMJaw_r0DvPQJF';
+const el=id=>document.getElementById(id);
+let accessToken=null;
+let verifiedFactorId=null;
+let currentDetail=null;
+let busy=false;
+function show(id,flag){el(id).hidden=!flag}
+function status(message,mode='neutral'){
+ const n=el('status');n.textContent=message;n.className='status '+mode;
+}
+function clearSensitive(){el('password').value='';el('totp').value='';el('approve-check').checked=false}
+function conceal(){show('login',true);show('factor',false);show('panel',false);show('detail',false);currentDetail=null;verifiedFactorId=null;el('results').replaceChildren();clearSensitive()}
+async function api(method,path,payload,auth=true){
+ const headers={'apikey':PUB,'Content-Type':'application/json','Accept':'application/json'};
+ if(auth&&accessToken)headers.Authorization='Bearer '+accessToken;
+ const response=await fetch(ORIGIN+path,{
+   method,headers,cache:'no-store',credentials:'omit',referrerPolicy:'no-referrer',redirect:'error',
+   body:payload===undefined?undefined:JSON.stringify(payload)
+ });
+ const raw=await response.text();let data=null;
+ try{data=raw?JSON.parse(raw):null}catch{}
+ if(!response.ok){
+   const err=new Error('Solicitud rechazada por Supabase.');err.code=response.status;
+   throw err;
+ }
+ return data;
+}
+function jwtAal(token){try{const b=token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/');return JSON.parse(atob(b)).aal||null}catch{return null}}
+async function ensureAdmin(){
+ const u=await api('GET','/auth/v1/user');
+ if(!u||!u.id)throw Error('Sesión de ANIMA inválida');
+ const admin=await api('POST','/rest/v1/rpc/paku_soy_administradora',{});
+ if(admin!==true)throw Error('No se reconocen permisos administrativos');
+ return u;
+}
+async function signOut(){
+ if(accessToken){try{await api('POST','/auth/v1/logout?scope=local',{})}catch{}}
+ accessToken=null;conceal();status('Sesión cerrada. No guardamos contraseñas ni códigos.');
+}
+function formatDate(raw){
+ if(!raw)return 'No informada';const d=new Date(raw);
+ if(Number.isNaN(d.getTime()))return 'No informada';
+ return new Intl.DateTimeFormat('es-CL',{timeZone:'America/Santiago',dateStyle:'medium',timeStyle:'short'}).format(d);
+}
+function statusLabel(x){return {'PENDIENTE_MFA':'Pendiente de MFA','APROBADA':'Aprobada (sin ejecutar)','CONSUMIDA':'Consumida','CADUCADA':'Caducada'}[x]||x||'Desconocido'}
+function infoPair(label,value){
+ const dt=document.createElement('dt');dt.textContent=label;
+ const dd=document.createElement('dd');dd.textContent=value??'No informado';
+ return [dt,dd];
+}
+async function loadList(){
+ const data=await api('POST','/rest/v1/rpc/paku_mfa_panel_listar_prueba',{});
+ if(!data||data.consulta!=='confirmada'||data.solo_prueba!==true||!Array.isArray(data.resultados))throw Error('El servidor no entregó un listado verificable');
+ const parent=el('results');parent.replaceChildren();
+ if(data.resultados.length===0){
+  const note=document.createElement('p');note.className='muted';
+  note.textContent='No hay solicitudes de prueba de la última hora. Esto es normal: el prototipo aún no está conectado a las escrituras de ANIMA.';
+  parent.append(note);return;
+ }
+ const text=document.createElement('p');text.className='muted';text.textContent=data.resultados.length+' solicitud(es) recientes';parent.append(text);
+ for(const row of data.resultados){
+   const btn=document.createElement('button');btn.type='button';btn.className='item';
+   const title=document.createElement('strong');title.textContent=row.accion+' — '+statusLabel(row.estado);
+   const subtitle=document.createElement('span');subtitle.textContent=(row.resumen||'Sin resumen')+' · vence '+formatDate(row.caduca_en);
+   btn.append(title,subtitle);btn.addEventListener('click',()=>loadDetail(row.solicitud_id));parent.append(btn);
+ }
+}
+async function loadDetail(id){
+ if(!/^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/i.test(id||'')){
+   status('Escribe un identificador de solicitud válido (UUID).','error');return;
+ }
+ show('detail',false);currentDetail=null;el('approve-check').checked=false;
+ status('Consultando el contenido exacto de la solicitud...');
+ try{
+  const d=await api('POST','/rest/v1/rpc/paku_mfa_panel_detalle_prueba',{p_solicitud:id});
+  if(!d||d.solicitud_id!==id||d.solo_prueba!==true||d.solo_lectura!==true)throw Error('Detalle no validado');
+  currentDetail=d;
+  const box=el('details');box.replaceChildren();
+  const fields=[
+   ['Acción solicitada',d.accion],['Resumen',d.resumen],['Estado',statusLabel(d.estado)],
+   ['PakuID',d.pakuid||'Alta de prueba sin PakuID'],
+   ['Versión esperada',d.version_perfil_esperada===null?'No aplica':String(d.version_perfil_esperada)],
+   ['Vence',formatDate(d.caduca_en)],['Hash de parámetros',d.hash_parametros]
+  ];
+  fields.forEach(([k,v])=>box.append(...infoPair(k,v)));
+  el('payload').textContent=JSON.stringify(d.parametros,null,2);
+  const canApprove=d.estado==='PENDIENTE_MFA'&&new Date(d.caduca_en).getTime()>Date.now();
+  show('approval-controls',canApprove);
+  show('detail',true);
+  status(canApprove?'Revisa todos los parámetros antes de aprobar.':'Solicitud consultada: no está pendiente de aprobación.',canApprove?'neutral':'ok');
+ }catch{status('No se pudo abrir la solicitud. Puede haber caducado o no pertenecer a esta cuenta.','error')}
+}
+el('login-form').addEventListener('submit',async event=>{
+ event.preventDefault();if(busy)return;busy=true;el('login-btn').disabled=true;
+ status('Verificando acceso administrativo...');
+ try{
+  const email=el('email').value.trim();const password=el('password').value;
+  const result=await api('POST','/auth/v1/token?grant_type=password',{email,password},false);
+  if(!result?.access_token)throw Error('Sin sesión');
+  accessToken=result.access_token;clearSensitive();
+  const user=await ensureAdmin();
+  const factors=Array.isArray(user.factors)?user.factors:[];
+  const f=factors.find(x=>(x.factor_type==='totp'||x.type==='totp')&&x.status==='verified');
+  if(!f?.id)throw Error('Sin TOTP verificado');
+  verifiedFactorId=f.id;
+  show('login',false);show('factor',true);
+  status('Acceso administrativo verificado. Ingresa un código nuevo de Google Authenticator para continuar.');
+ }catch{
+   if(accessToken){try{await api('POST','/auth/v1/logout?scope=local',{})}catch{}}
+   accessToken=null;conceal();
+   status('No se pudo validar el acceso. Comprueba que sea tu cuenta administradora de ANIMA.','error');
+ }finally{clearSensitive();el('login-btn').disabled=false;busy=false}
+});
+el('factor-form').addEventListener('submit',async event=>{
+ event.preventDefault();if(busy||!verifiedFactorId||!accessToken)return;
+ const code=el('totp').value.trim();
+ if(!/^[0-9]{6}$/.test(code)){status('El código debe tener seis dígitos.','error');return;}
+ busy=true;el('factor-btn').disabled=true;status('Verificando Google Authenticator...');
+ try{
+  const id=encodeURIComponent(verifiedFactorId);
+  const challenge=await api('POST','/auth/v1/factors/'+id+'/challenge',{});
+  if(!challenge?.id)throw Error('Sin desafío');
+  const verified=await api('POST','/auth/v1/factors/'+id+'/verify',{challenge_id:challenge.id,code});
+  if(!verified?.access_token)throw Error('Sin nuevo token');
+  accessToken=verified.access_token;el('totp').value='';
+  if(jwtAal(accessToken)!=='aal2')throw Error('Sin AAL2');
+  await ensureAdmin();
+  show('factor',false);show('panel',true);
+  status('AAL2 confirmado. Puedes revisar solicitudes de prueba sin ejecutar escrituras.','ok');
+  await loadList();
+ }catch{
+   el('totp').value='';
+   if(jwtAal(accessToken)==='aal2'){
+      show('factor',false);show('panel',true);
+      status('Sesión MFA confirmada, pero no fue posible cargar las solicitudes. Pulsa Actualizar lista.','error');
+   }else{
+      status('No se pudo verificar el código. Introduce el código vigente o vuelve a iniciar sesión.','error');
+   }
+ }finally{el('factor-btn').disabled=false;busy=false}
+});
+el('load-btn').addEventListener('click',async()=>{
+ status('Actualizando solicitudes...');try{await loadList();status('Listado actualizado.','ok')}catch{status('No se pudo consultar el listado. Repite la verificación de la sesión MFA si es necesario.','error')}
+});
+el('search-form').addEventListener('submit',event=>{event.preventDefault();loadDetail(el('solicitud').value.trim());});
+el('approve-check').addEventListener('change',()=>{el('approve-btn').disabled=!el('approve-check').checked||!currentDetail});
+el('approve-btn').addEventListener('click',async()=>{
+ if(busy||!currentDetail||currentDetail.estado!=='PENDIENTE_MFA'||!el('approve-check').checked)return;
+ if(!window.confirm('¿Apruebas únicamente esta solicitud de prueba con los parámetros mostrados? Esta acción NO modifica datos de mascotas.'))return;
+ const btn=el('approve-btn');busy=true;btn.disabled=true;status('Registrando la aprobación MFA de prueba...');
+ try{
+  const d=currentDetail;
+  const result=await api('POST','/rest/v1/rpc/paku_mfa_panel_aprobar_prueba',{
+    p_solicitud:d.solicitud_id,p_hash_parametros:d.hash_parametros,p_confirmacion:'APROBAR_ESTA_OPERACION'
+  });
+  if(result?.estado!=='APROBADA'||result?.solicitud_id!==d.solicitud_id||result?.no_ejecuta_escrituras!==true)throw Error('Aprobación no confirmada');
+  currentDetail=null;el('approve-check').checked=false;
+  show('approval-controls',false);
+  status('Solicitud aprobada en el prototipo. No se ha ejecutado ninguna escritura de ANIMA.','ok');
+  try{await loadList()}catch{}
+ }catch{status('El servidor rechazó la aprobación. Es posible que haya caducado o que MFA ya no sea reciente. No se ejecutaron escrituras.','error')}
+ finally{busy=false;btn.disabled=false}
+});
+el('logout-btn').addEventListener('click',signOut);</script>
+</body>
+</html>
